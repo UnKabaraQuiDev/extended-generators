@@ -9,3 +9,6 @@ commands:
     aliases: ["is"]
   clearconfig:
     name: "clearconfig"
+  setisland:
+    name: "setisland"
+    aliases: ["setis"]

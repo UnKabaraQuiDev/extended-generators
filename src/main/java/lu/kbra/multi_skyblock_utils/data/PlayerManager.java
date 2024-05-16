@@ -105,11 +105,17 @@ public class PlayerManager {
 		genFillChest((Chest) w.getBlockState(chestLocation));
 
 		getPlayer(player).setIslandLocation(islandLocation.clone().add(0.5, 1, 0.5));
+		player.setRespawnLocation(getPlayer(player).getIslandLocation());
 		addUsedLocation(islandLocation);
 
 		player.teleport(getPlayer(player).getIslandLocation());
 	}
 
+	public static void updateIslandLocation(Player player) {
+		getPlayer(player).setIslandLocation(player.getLocation());
+		// player.setRespawnLocation(getPlayer(player).getIslandLocation());
+	}
+	
 	private static void genFillChest(Chest chest) {
 		chest.getBlockInventory().addItem(new ItemStack(Material.APPLE, 64));
 		chest.getBlockInventory().addItem(new ItemStack(Material.LEATHER_CHESTPLATE, 1));

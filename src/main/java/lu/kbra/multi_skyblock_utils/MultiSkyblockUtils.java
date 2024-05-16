@@ -3,6 +3,7 @@ package lu.kbra.multi_skyblock_utils;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import lu.kbra.multi_skyblock_utils.cmds.CmdIsland;
+import lu.kbra.multi_skyblock_utils.cmds.CmdSetIsland;
 import lu.kbra.multi_skyblock_utils.data.PlayerManager;
 import lu.kbra.multi_skyblock_utils.listener.PlayerManagerListener;
 import lu.kbra.multi_skyblock_utils.listener.PlayerWorldInteractionListener;
@@ -36,6 +37,8 @@ public class MultiSkyblockUtils extends JavaPlugin {
 		
 		getCommand("island").setExecutor(island);
 		getCommand("island").setTabCompleter(island);
+		
+		getCommand("setisland").setExecutor(new CmdSetIsland());
 		
 		// getCommand("clearconfig").setExecutor(new CmdClearConfig());
 		
