@@ -31,14 +31,15 @@ public class WorldWorldInteractionListener implements Listener {
 				: (rand < 0.01 ? Material.GOLD_ORE
 				: (rand < 0.03 ? Material.IRON_ORE
 				: (rand < 0.08 ? Material.COAL_ORE
-				: (rand < 0.16 ? Material.REDSTONE_ORE
-				: (rand < 0.2 ? Material.LAPIS_ORE
-				: Material.COBBLESTONE))))));
+				: (rand < 0.10 ? Material.REDSTONE_ORE
+				: (rand < 0.12 ? Material.LAPIS_ORE
+				: (rand < 0.20 ? Material.COBBLED_DEEPSLATE
+						: Material.COBBLESTONE)))))));
 	}
 
 	public static void main(String[] args) {
 		HashMap<Material, Integer> counter = new HashMap<>();
-		final long MAX = 10_000_000_000L;
+		final long MAX = 100_000_000L;
 		for (long i = 0; i < MAX; i++) {
 			Material type = chooseType();
 

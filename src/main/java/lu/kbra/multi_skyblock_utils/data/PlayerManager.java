@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -189,6 +190,10 @@ public class PlayerManager {
 
 	public static List<PlayerData> getPlayerData() {
 		return playerData;
+	}
+
+	public static List<String> autoCompletePlayerName(String nn) {
+		return PlayerManager.getPlayerData().stream().map(pd -> pd.getName()).filter(name -> name.toLowerCase().startsWith(nn.toLowerCase())).collect(Collectors.toList());
 	}
 
 }

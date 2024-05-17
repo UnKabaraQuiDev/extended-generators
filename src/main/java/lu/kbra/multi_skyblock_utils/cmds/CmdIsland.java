@@ -28,22 +28,37 @@ public class CmdIsland implements CommandExecutor, TabCompleter {
 
 		if (args.length > 0) {
 
+			if (PlayerManager.getPlayer(player).isConfined()) {
+				sender.sendMessage(ChatColor.RED + "You have been confined to your island !");
+
+				return false;
+			}
+
 			String playerName = args[0];
 
 			if (!PlayerManager.knowsPlayer(playerName)) {
-				sender.sendMessage(ChatColor.RED + "Player: " + ChatColor.GOLD + playerName + ChatColor.RED + ", unknown");
+				sender.sendMessage(
+						ChatColor.RED + "Player: " + ChatColor.GOLD + playerName + ChatColor.RED + ", unknown");
 
 				return false;
 			}
 
 			PlayerData other = PlayerManager.getPlayer(args[0]);
+
+			if (other.isBlacklisted(player)) {
+				player.sendMessage(ChatColor.RED + "This player blacklisted you !");
+
+				return false;
+			}
+
 			loc = other.getIslandLocation();
 			player.sendTitle(ChatColor.GOLD + "Teleporting", ChatColor.GREEN + args[0], 10, 10, 10);
 
 			if (other.isOnline()) {
 				Player otherPlayer = other.getOnlinePlayer();
 				otherPlayer.playSound(otherPlayer.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 1f);
-				otherPlayer.sendMessage(ChatColor.GREEN + player.getDisplayName() + ChatColor.GOLD + " teleported to your island");
+				otherPlayer.sendMessage(
+						ChatColor.GREEN + player.getDisplayName() + ChatColor.GOLD + " teleported to your island");
 			}
 
 		} else {
@@ -61,10 +76,7 @@ public class CmdIsland implements CommandExecutor, TabCompleter {
 
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-		if (args.length == 0)
-			return null;
-
-		return PlayerManager.getPlayerData().stream().map(pd -> pd.getName()).filter(name -> name.startsWith(args[0])).collect(Collectors.toList());
+		return PlayerManager.autoCompletePlayerName(args.length == 0 ? "" : args[0]);
 	}
 
 }
