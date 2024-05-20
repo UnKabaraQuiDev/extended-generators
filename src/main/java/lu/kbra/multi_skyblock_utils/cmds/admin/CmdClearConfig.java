@@ -1,4 +1,4 @@
-package lu.kbra.multi_skyblock_utils.cmds;
+package lu.kbra.multi_skyblock_utils.cmds.admin;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

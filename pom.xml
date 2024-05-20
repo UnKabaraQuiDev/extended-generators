@@ -30,11 +30,15 @@
 			<version>1.20.4-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>lu.pcy113</groupId>
+			<artifactId>PCLib</artifactId>
+			<version>0.4</version>
+		</dependency>
 	</dependencies>
 
 	<build>
 		<plugins>
-			<!-- Maven compiler plugin configuration -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -44,7 +48,6 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
-			<!-- Maven shade plugin configuration for creating a fat jar -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
@@ -60,7 +63,6 @@
 								<excludes>
 									<exclude>
 										org.apache.maven:com.springsource.javax.xml.stream:jar:1.0.1</exclude>
-									<!-- Add more exclusions if needed -->
 								</excludes>
 							</artifactSet>
 							<filters>
@@ -68,8 +70,6 @@
 									<artifact>*:*</artifact>
 									<excludes>
 										<exclude>META-INF/MANIFEST.MF</exclude>
-										<!-- Exclude specific resources if
-										needed -->
 									</excludes>
 								</filter>
 							</filters>
@@ -78,29 +78,6 @@
 				</executions>
 			</plugin>
 
-			<!--<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>3.0.0</version>
-				<executions>
-					<execution>
-						<id>copy-jar</id>
-						<phase>package</phase>
-						<goals>
-							<goal>exec</goal>
-						</goals>
-						<configuration>
-							<executable>cp</executable>
-							<arguments>
-								<argument>
-									${project.build.directory}/${project.build.finalName}.jar</argument>
-								<argument>
-									/ssd2/workspaces/mc/spigot_1.20.4/plugins/multi-skyblock-utils.jar</argument>
-							</arguments>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>-->
 		</plugins>
 
 

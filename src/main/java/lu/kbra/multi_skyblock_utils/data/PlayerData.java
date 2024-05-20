@@ -1,7 +1,10 @@
 package lu.kbra.multi_skyblock_utils.data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -18,6 +21,7 @@ public class PlayerData {
 	private Location islandLocation;
 	private boolean confined;
 	private List<String> blacklist = new ArrayList<>();
+	private HashMap<String, Location> homes = new HashMap<>();
 
 	public PlayerData() {
 	}
@@ -72,7 +76,7 @@ public class PlayerData {
 	}
 
 	public boolean isBlacklisted(Player player) {
-		System.err.println(name+" contains: "+blacklist);
+		System.err.println(name + " contains: " + blacklist);
 		return blacklist.contains(player.getUniqueId().toString());
 	}
 
@@ -84,6 +88,14 @@ public class PlayerData {
 		this.blacklist = blacklist;
 	}
 
+	public HashMap<String, Location> getHomes() {
+		return homes;
+	}
+
+	public void setHomes(HashMap<String, Location> homes) {
+		this.homes = homes;
+	}
+
 	public void save(YamlConfiguration config) {
 		ConfigurationSection sec = config.createSection(name);
 		sec.set("name", name);
@@ -91,6 +103,9 @@ public class PlayerData {
 		sec.set("loc", islandLocation);
 		sec.set("confined", confined);
 		sec.set("blacklist", blacklist);
+		for (Entry<String, Location> home : homes.entrySet()) {
+			sec.set("homes." + home.getKey(), home.getValue());
+		}
 	}
 
 	public PlayerData load(ConfigurationSection sec) {
@@ -102,8 +117,16 @@ public class PlayerData {
 		this.islandLocation = sec.getLocation("loc");
 		this.confined = sec.getBoolean("confined", false);
 		this.blacklist = sec.getStringList("blacklist");
-
+		
+		if(sec.contains("homes")) {
+			sec.getConfigurationSection("homes").getValues(false).forEach((String key, Object value) -> homes.put(key, (Location) value));
+		} 
+		
 		return this;
+	}
+
+	public List<String> autoCompleteHomeName(String beginning) {
+		return homes.keySet().stream().filter(a -> a.toLowerCase().startsWith(beginning.toLowerCase())).collect(Collectors.toList());
 	}
 
 }

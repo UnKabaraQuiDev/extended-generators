@@ -16,3 +16,15 @@ commands:
   confine:
     name: "confine"
     permission: op
+  home:
+    name: "home"
+    aliases: ["h"]
+  homes:
+    name: "homes"
+    aliases: ["hs"]
+  sethome:
+    name: "sethome"
+    aliases: ["sh"]
+  delhome:
+    name: "delhome"
+    aliases: ["dh"]

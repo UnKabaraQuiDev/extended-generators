@@ -1,4 +1,4 @@
-package lu.kbra.multi_skyblock_utils.cmds;
+package lu.kbra.multi_skyblock_utils.cmds.island;
 
 import java.util.List;
 import java.util.UUID;

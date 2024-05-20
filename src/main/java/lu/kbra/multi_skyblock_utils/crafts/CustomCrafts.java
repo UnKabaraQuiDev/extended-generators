@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
 
 import lu.kbra.multi_skyblock_utils.MultiSkyblockUtils;
@@ -11,12 +12,15 @@ import lu.kbra.multi_skyblock_utils.MultiSkyblockUtils;
 public class CustomCrafts {
 
 	public static void registerShapelessRecipe() {
-		registerLavaBucket();
 		registerGravel();
 		registerSand();
 		registerCobbledDeepslate();
 		registerSapling();
 		registerDirt();
+	}
+	
+	public static void registerShapedRecipe() {
+		registerLavaBucket();
 	}
 
 	private static void registerDirt() {
@@ -87,11 +91,13 @@ public class CustomCrafts {
 
 		NamespacedKey key = new NamespacedKey(MultiSkyblockUtils.INSTANCE, "msu_lava_bucket");
 
-		ShapelessRecipe recipe = new ShapelessRecipe(key, customItem);
+		ShapedRecipe recipe = new ShapedRecipe(key, customItem);
 
-		recipe.addIngredient(1, Material.DIAMOND_BLOCK);
-		recipe.addIngredient(7, Material.DIAMOND);
-		recipe.addIngredient(1, Material.BUCKET);
+		recipe.shape("DBD", "xEx");
+		
+		recipe.setIngredient('B', Material.DIAMOND_BLOCK);
+		recipe.setIngredient('D', Material.DIAMOND);
+		recipe.setIngredient('E', Material.BUCKET);
 
 		Bukkit.addRecipe(recipe);
 	}
