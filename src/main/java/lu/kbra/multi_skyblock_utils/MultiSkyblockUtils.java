@@ -75,6 +75,7 @@ public class MultiSkyblockUtils extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new WorldWorldInteractionListener(), this);
 
 		CustomCrafts.registerShapelessRecipe();
+		CustomCrafts.registerShapedRecipe();
 
 		getLogger().info(this.getClass().getName() + " enabled !");
 	}

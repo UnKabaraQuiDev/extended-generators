@@ -17,8 +17,21 @@ public class CustomCrafts {
 		registerCobbledDeepslate();
 		registerSapling();
 		registerDirt();
+		registerQuartz();
 	}
 	
+	private static void registerQuartz() {
+		ItemStack customItem = new ItemStack(Material.QUARTZ);
+
+		NamespacedKey key = new NamespacedKey(MultiSkyblockUtils.INSTANCE, "msu_quartz");
+
+		ShapelessRecipe recipe = new ShapelessRecipe(key, customItem);
+
+		recipe.addIngredient(1, Material.DIORITE);
+
+		Bukkit.addRecipe(recipe);
+	}
+
 	public static void registerShapedRecipe() {
 		registerLavaBucket();
 	}
