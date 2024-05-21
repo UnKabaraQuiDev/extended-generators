@@ -3,15 +3,17 @@ package lu.kbra.multi_skyblock_utils.crafts;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
+import org.bukkit.inventory.recipe.CookingBookCategory;
 
 import lu.kbra.multi_skyblock_utils.MultiSkyblockUtils;
 
 public class CustomCrafts {
 
-	public static void registerShapelessRecipe() {
+	public static void registerShapelessRecipes() {
 		registerGravel();
 		registerSand();
 		registerCobbledDeepslate();
@@ -19,7 +21,7 @@ public class CustomCrafts {
 		registerDirt();
 		registerQuartz();
 	}
-	
+
 	private static void registerQuartz() {
 		ItemStack customItem = new ItemStack(Material.QUARTZ);
 
@@ -30,10 +32,6 @@ public class CustomCrafts {
 		recipe.addIngredient(1, Material.DIORITE);
 
 		Bukkit.addRecipe(recipe);
-	}
-
-	public static void registerShapedRecipe() {
-		registerLavaBucket();
 	}
 
 	private static void registerDirt() {
@@ -48,7 +46,7 @@ public class CustomCrafts {
 
 		Bukkit.addRecipe(recipe);
 	}
-	
+
 	private static void registerGravel() {
 		ItemStack customItem = new ItemStack(Material.GRAVEL);
 
@@ -60,7 +58,7 @@ public class CustomCrafts {
 
 		Bukkit.addRecipe(recipe);
 	}
-	
+
 	private static void registerSapling() {
 		ItemStack customItem = new ItemStack(Material.OAK_SAPLING, 2);
 
@@ -73,7 +71,7 @@ public class CustomCrafts {
 
 		Bukkit.addRecipe(recipe);
 	}
-	
+
 	private static void registerSand() {
 		ItemStack customItem = new ItemStack(Material.SAND);
 
@@ -85,7 +83,7 @@ public class CustomCrafts {
 
 		Bukkit.addRecipe(recipe);
 	}
-	
+
 	private static void registerCobbledDeepslate() {
 		ItemStack customItem = new ItemStack(Material.COBBLED_DEEPSLATE, 8);
 
@@ -99,6 +97,11 @@ public class CustomCrafts {
 		Bukkit.addRecipe(recipe);
 	}
 
+	public static void registerShapedRecipes() {
+		registerLavaBucket();
+		registerGrassBlock();
+	}
+
 	private static void registerLavaBucket() {
 		ItemStack customItem = new ItemStack(Material.LAVA_BUCKET);
 
@@ -107,11 +110,43 @@ public class CustomCrafts {
 		ShapedRecipe recipe = new ShapedRecipe(key, customItem);
 
 		recipe.shape("DBD", "xEx");
-		
+
 		recipe.setIngredient('B', Material.DIAMOND_BLOCK);
 		recipe.setIngredient('D', Material.DIAMOND);
 		recipe.setIngredient('E', Material.BUCKET);
 
+		Bukkit.addRecipe(recipe);
+	}
+	
+	private static void registerGrassBlock() {
+		ItemStack customItem = new ItemStack(Material.GRASS_BLOCK);
+
+		NamespacedKey key = new NamespacedKey(MultiSkyblockUtils.INSTANCE, "msu_grass_block");
+
+		ShapedRecipe recipe = new ShapedRecipe(key, customItem);
+
+		recipe.shape("SSS", "SDS", "BBB");
+
+		recipe.setIngredient('S', Material.WHEAT_SEEDS);
+		recipe.setIngredient('D', Material.DIRT);
+		recipe.setIngredient('B', Material.BONE_MEAL);
+
+		Bukkit.addRecipe(recipe);
+	}
+	
+	public static void registerFurnaceRecipes() {
+		registerLeather();
+	}
+
+	public static void registerLeather() {
+		ItemStack customItem = new ItemStack(Material.LEATHER);
+
+		NamespacedKey key = new NamespacedKey(MultiSkyblockUtils.INSTANCE, "msu_leather");
+		
+		FurnaceRecipe recipe = new FurnaceRecipe(key, customItem, Material.ROTTEN_FLESH, 0, 150);
+		
+		recipe.setCategory(CookingBookCategory.MISC);
+		
 		Bukkit.addRecipe(recipe);
 	}
 
