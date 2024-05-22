@@ -1,5 +1,7 @@
 package lu.kbra.multi_skyblock_utils;
 
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import lu.kbra.multi_skyblock_utils.cmds.admin.CmdConfine;
@@ -9,7 +11,6 @@ import lu.kbra.multi_skyblock_utils.cmds.homes.CmdHomes;
 import lu.kbra.multi_skyblock_utils.cmds.homes.CmdSetHome;
 import lu.kbra.multi_skyblock_utils.cmds.island.CmdConfigIsland;
 import lu.kbra.multi_skyblock_utils.cmds.island.CmdIsland;
-import lu.kbra.multi_skyblock_utils.cmds.island.CmdSetIsland;
 import lu.kbra.multi_skyblock_utils.crafts.CustomCrafts;
 import lu.kbra.multi_skyblock_utils.data.PlayerManager;
 import lu.kbra.multi_skyblock_utils.listener.PlayerManagerListener;
@@ -41,34 +42,22 @@ public class MultiSkyblockUtils extends JavaPlugin {
 	public void onEnable() {
 		PlayerManager.enable();
 
-		CmdIsland island = new CmdIsland();
-		getCommand("island").setExecutor(island);
-		getCommand("island").setTabCompleter(island);
+		registerCommand("island", new CmdIsland());
+		
+		registerCommand("configisland", new CmdConfigIsland());
 
-		CmdConfigIsland configIsland = new CmdConfigIsland();
-		getCommand("configisland").setExecutor(configIsland);
-		getCommand("configisland").setTabCompleter(configIsland);
-
-		CmdConfine confine = new CmdConfine();
-		getCommand("confine").setExecutor(confine);
-		getCommand("confine").setTabCompleter(confine);
+		registerCommand("confine", new CmdConfine());
 
 		// getCommand("clearconfig").setExecutor(new CmdClearConfig());
 
 		CmdHome home = new CmdHome();
-		getCommand("home").setExecutor(home);
-		getCommand("home").setTabCompleter(home);
+		registerCommand("home", home);
 
-		CmdHomes homes = new CmdHomes();
-		getCommand("homes").setExecutor(homes);
-		getCommand("homes").setTabCompleter(homes);
+		registerCommand("homes", new CmdHomes());
 
-		CmdDelHome delHome = new CmdDelHome();
-		getCommand("delhome").setExecutor(delHome);
-		getCommand("delhome").setTabCompleter(home);
+		registerCommand("delhome", new CmdDelHome(), home);
 
-		CmdSetHome setHome = new CmdSetHome();
-		getCommand("sethome").setExecutor(setHome);
+		registerCommand("sethome", new CmdSetHome());
 
 		getServer().getPluginManager().registerEvents(new PlayerManagerListener(), this);
 		getServer().getPluginManager().registerEvents(new PlayerWorldInteractionListener(), this);
@@ -79,6 +68,17 @@ public class MultiSkyblockUtils extends JavaPlugin {
 		CustomCrafts.registerFurnaceRecipes();
 
 		getLogger().info(this.getClass().getName() + " enabled !");
+	}
+
+	private void registerCommand(String name, CommandExecutor exec) {
+		registerCommand(name, exec, exec instanceof TabCompleter ? (TabCompleter) exec : null);
+	}
+	
+	private void registerCommand(String name, CommandExecutor exec, TabCompleter tab) {
+		getCommand(name).setExecutor(exec);
+		if(tab != null) {
+			getCommand(name).setTabCompleter(tab);
+		}
 	}
 
 }
