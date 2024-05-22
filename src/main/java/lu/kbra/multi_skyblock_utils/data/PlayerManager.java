@@ -14,11 +14,14 @@ import org.bukkit.World;
 import org.bukkit.block.Chest;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import lu.kbra.multi_skyblock_utils.MultiSkyblockUtils;
 import lu.kbra.multi_skyblock_utils.utils.Cuboid;
+import lu.kbra.multi_skyblock_utils.utils.ProtocolUtils;
 
 public class PlayerManager {
 
@@ -54,6 +57,10 @@ public class PlayerManager {
 		}
 	}
 
+	public static void reload() {
+		enable();
+	}
+
 	public static void disable() {
 		save();
 		playerData.clear();
@@ -81,6 +88,24 @@ public class PlayerManager {
 		genIsland(player);
 
 		save();
+	}
+
+	@Deprecated
+	public static void showIslands(Player player) {
+		for (PlayerData pd : playerData) {
+			ProtocolUtils.send(player, createArmorStand(pd.getIslandLocation(), pd.getName())).remove();
+		}
+	}
+
+	private static ArmorStand createArmorStand(Location location, String name) {
+		ArmorStand armorStand = (ArmorStand) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
+		armorStand.setVisible(false);
+		armorStand.setCustomName(name);
+		armorStand.setCustomNameVisible(true);
+		armorStand.setGravity(false);
+		armorStand.setInvulnerable(true);
+		armorStand.setMarker(true);
+		return armorStand;
 	}
 
 	private static void genIsland(Player player) {
@@ -116,7 +141,7 @@ public class PlayerManager {
 		getPlayer(player).setIslandLocation(player.getLocation());
 		// player.setRespawnLocation(getPlayer(player).getIslandLocation());
 	}
-	
+
 	private static void genFillChest(Chest chest) {
 		chest.getBlockInventory().addItem(new ItemStack(Material.APPLE, 64));
 		chest.getBlockInventory().addItem(new ItemStack(Material.LEATHER_CHESTPLATE, 1));

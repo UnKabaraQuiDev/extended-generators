@@ -15,11 +15,55 @@ public class CustomCrafts {
 
 	public static void registerShapelessRecipes() {
 		registerGravel();
+		registerBigGravel();
 		registerSand();
+		registerBigSand();
 		registerCobbledDeepslate();
 		registerSapling();
 		registerDirt();
+		registerBigDirt();
 		registerQuartz();
+	}
+
+	private static void registerBigGravel() {
+		ItemStack customItem = new ItemStack(Material.GRAVEL, 9);
+
+		NamespacedKey key = new NamespacedKey(MultiSkyblockUtils.INSTANCE, "msu_big_gravel");
+
+		ShapelessRecipe recipe = new ShapelessRecipe(key, customItem);
+
+		for (int i = 0; i < 9; i++)
+			recipe.addIngredient(1, Material.COBBLESTONE);
+
+		Bukkit.addRecipe(recipe);
+	}
+
+	private static void registerBigDirt() {
+		ItemStack customItem = new ItemStack(Material.DIRT, 4);
+
+		NamespacedKey key = new NamespacedKey(MultiSkyblockUtils.INSTANCE, "msu_big_dirt");
+
+		ShapelessRecipe recipe = new ShapelessRecipe(key, customItem);
+
+		for (int i = 0; i < 4; i++) {
+			recipe.addIngredient(1, Material.GRAVEL);
+			recipe.addIngredient(1, Material.SAND);
+		}
+
+		Bukkit.addRecipe(recipe);
+	}
+
+	private static void registerBigSand() {
+		ItemStack customItem = new ItemStack(Material.SAND, 9);
+
+		NamespacedKey key = new NamespacedKey(MultiSkyblockUtils.INSTANCE, "msu_big_sand");
+
+		ShapelessRecipe recipe = new ShapelessRecipe(key, customItem);
+
+		for (int i = 0; i < 9; i++)
+			recipe.addIngredient(1, Material.GRAVEL);
+
+		Bukkit.addRecipe(recipe);
 	}
 
 	private static void registerQuartz() {
@@ -117,7 +161,7 @@ public class CustomCrafts {
 
 		Bukkit.addRecipe(recipe);
 	}
-	
+
 	private static void registerGrassBlock() {
 		ItemStack customItem = new ItemStack(Material.GRASS_BLOCK);
 
@@ -133,7 +177,7 @@ public class CustomCrafts {
 
 		Bukkit.addRecipe(recipe);
 	}
-	
+
 	public static void registerFurnaceRecipes() {
 		registerLeather();
 	}
@@ -142,11 +186,11 @@ public class CustomCrafts {
 		ItemStack customItem = new ItemStack(Material.LEATHER);
 
 		NamespacedKey key = new NamespacedKey(MultiSkyblockUtils.INSTANCE, "msu_leather");
-		
+
 		FurnaceRecipe recipe = new FurnaceRecipe(key, customItem, Material.ROTTEN_FLESH, 0, 150);
-		
+
 		recipe.setCategory(CookingBookCategory.MISC);
-		
+
 		Bukkit.addRecipe(recipe);
 	}
 

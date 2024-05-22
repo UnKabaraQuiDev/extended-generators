@@ -4,7 +4,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import lu.kbra.multi_skyblock_utils.cmds.admin.CmdClearConfig;
 import lu.kbra.multi_skyblock_utils.cmds.admin.CmdConfine;
+import lu.kbra.multi_skyblock_utils.cmds.admin.CmdReloadConfig;
 import lu.kbra.multi_skyblock_utils.cmds.homes.CmdDelHome;
 import lu.kbra.multi_skyblock_utils.cmds.homes.CmdHome;
 import lu.kbra.multi_skyblock_utils.cmds.homes.CmdHomes;
@@ -47,8 +49,10 @@ public class MultiSkyblockUtils extends JavaPlugin {
 		registerCommand("configisland", new CmdConfigIsland());
 
 		registerCommand("confine", new CmdConfine());
+		
+		registerCommand("reloadconfig", new CmdReloadConfig());
 
-		// getCommand("clearconfig").setExecutor(new CmdClearConfig());
+		registerCommand("clearconfig", new CmdClearConfig());
 
 		CmdHome home = new CmdHome();
 		registerCommand("home", home);

@@ -71,22 +71,29 @@ public class WorldWorldInteractionListener implements Listener {
 			Block block = event.getBlock();
 			Location loc = event.getBlock().getLocation();
 
-			Material supType = block.getWorld().getBlockAt(loc.add(0, 1, 0)).getType();
-			if (upgradedProbabilities.containsKey(supType)) {
+			Material supType = block.getWorld().getBlockAt(loc.add(0, 1, 0)).getType(), botType = block.getWorld().getBlockAt(loc.subtract(0, 1, 0)).getType();
 
-				Material newType = selectWithProbability(upgradedProbabilities.get(supType), Material.COBBLESTONE);
+			if (!upgradedProbabilities.containsKey(supType)) {
+				if (!upgradedProbabilities.containsKey(botType)) {
+					Material newType = selectWithProbability(basicProbabilities, Material.COBBLESTONE);
 
-				event.setCancelled(true);
-				block.getLocation().getWorld().getBlockAt(block.getLocation()).setType(newType, true);
+					event.setCancelled(true);
+					block.getLocation().getWorld().getBlockAt(block.getLocation()).setType(newType, true);
 
-				return;
+					return;
+				} else {
+					supType = botType;
+
+					Material newType = selectWithProbability(upgradedProbabilities.get(supType), Material.COBBLESTONE);
+
+					event.setCancelled(true);
+					block.getLocation().getWorld().getBlockAt(block.getLocation()).setType(newType, true);
+				}
 			}
 
-			Material newType = selectWithProbability(basicProbabilities, Material.COBBLESTONE);
-
-			event.setCancelled(true);
-			block.getLocation().getWorld().getBlockAt(block.getLocation()).setType(newType, true);
+			return;
 		}
+
 	}
 
 	public static Material selectWithProbability(List<Pair<Material, Double>> probabilities, Material defaultObject) {
