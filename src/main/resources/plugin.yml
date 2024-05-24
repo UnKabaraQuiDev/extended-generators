@@ -20,8 +20,17 @@ commands:
   configisland:
     name: "configisland"
     aliases: ["cis"]
-  confine:
-    name: "confine"
+  superconfigisland:
+    name: "superconfigisland"
+    permission: op
+    aliases: ["s_cis"]
+  confineisland:
+    name: "confineisland"
+    aliases: ["confineis"]
+    permission: op
+  confinehome:
+    name: "confinehome"
+    aliases: ["confineh"]
     permission: op
   home:
     name: "home"

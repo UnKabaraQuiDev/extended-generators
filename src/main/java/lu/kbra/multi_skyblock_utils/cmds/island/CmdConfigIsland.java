@@ -35,8 +35,10 @@ public class CmdConfigIsland implements CommandExecutor, TabCompleter {
 
 				return true;
 			} else if (args[0].equalsIgnoreCase("spawn")) {
-				player.setRespawnLocation(player.getLocation());
+				player.setRespawnLocation(player.getLocation());	
 
+				player.sendMessage(ChatColor.GOLD + "Set respawn point to: " + ChatColor.GREEN + player.getLocation().getBlockX() + ", " + player.getLocation().getBlockY() + ", " + player.getLocation().getBlockZ());
+				
 				return true;
 			} else if (args[0].equalsIgnoreCase("show")) {
 				player.sendMessage("Not supported :/");

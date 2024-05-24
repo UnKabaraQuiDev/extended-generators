@@ -19,7 +19,7 @@ public class PlayerData {
 	private UUID uuid;
 	private String name;
 	private Location islandLocation;
-	private boolean confined;
+	private boolean confinedIsland, confinedHome;
 	private List<String> blacklist = new ArrayList<>();
 	private HashMap<String, Location> homes = new HashMap<>();
 
@@ -59,12 +59,20 @@ public class PlayerData {
 		return getOnlinePlayer() != null;
 	}
 
-	public boolean isConfined() {
-		return confined;
+	public boolean isConfinedHome() {
+		return confinedHome;
 	}
 
-	public void setConfined(boolean confined) {
-		this.confined = confined;
+	public boolean isConfinedIsland() {
+		return confinedIsland;
+	}
+
+	public void setConfinedHome(boolean confinedHome) {
+		this.confinedHome = confinedHome;
+	}
+
+	public void setConfinedIsland(boolean confinedIsland) {
+		this.confinedIsland = confinedIsland;
 	}
 
 	public void addIslandBlacklist(String name) {
@@ -101,7 +109,8 @@ public class PlayerData {
 		sec.set("name", name);
 		sec.set("uuid", uuid.toString());
 		sec.set("loc", islandLocation);
-		sec.set("confined", confined);
+		sec.set("confinedHome", confinedHome);
+		sec.set("confinedIsland", confinedIsland);
 		sec.set("blacklist", blacklist);
 		for (Entry<String, Location> home : homes.entrySet()) {
 			sec.set("homes." + home.getKey(), home.getValue());
@@ -115,13 +124,14 @@ public class PlayerData {
 		this.uuid = UUID.fromString(sec.getString("uuid"));
 		this.name = sec.getString("name");
 		this.islandLocation = sec.getLocation("loc");
-		this.confined = sec.getBoolean("confined", false);
+		this.confinedHome = sec.getBoolean("confinedHome", sec.getBoolean("confined", false));
+		this.confinedIsland = sec.getBoolean("confinedIsland", sec.getBoolean("confined", false));
 		this.blacklist = sec.getStringList("blacklist");
-		
-		if(sec.contains("homes")) {
+
+		if (sec.contains("homes")) {
 			sec.getConfigurationSection("homes").getValues(false).forEach((String key, Object value) -> homes.put(key, (Location) value));
-		} 
-		
+		}
+
 		return this;
 	}
 

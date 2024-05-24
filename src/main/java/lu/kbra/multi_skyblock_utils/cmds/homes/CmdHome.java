@@ -30,6 +30,12 @@ public class CmdHome implements CommandExecutor, TabCompleter {
 		String name = args[0];
 
 		PlayerData pd = PlayerManager.getPlayer(player);
+		
+		if(pd.isConfinedHome()) {
+			sender.sendMessage(ChatColor.RED + "You have been confined to your island !");
+
+			return false;
+		}
 
 		if (!pd.getHomes().containsKey(name)) {
 			sender.sendMessage(ChatColor.RED + "No home named: " + ChatColor.GREEN + name);

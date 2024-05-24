@@ -1,5 +1,6 @@
 package lu.kbra.multi_skyblock_utils.cmds.admin.homes;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -28,7 +29,7 @@ public class CmdSuperHome implements CommandExecutor, TabCompleter {
 		}
 
 		String playerName = args[0];
-		String name = args[0];
+		String name = args[1];
 
 		if(!PlayerManager.knowsPlayer(playerName)) {
 			sender.sendMessage(ChatColor.RED + "Unknown player: " + ChatColor.GOLD + playerName);
@@ -60,10 +61,10 @@ public class CmdSuperHome implements CommandExecutor, TabCompleter {
 		}
 
 		if (PlayerManager.knowsPlayer(args[0])) {
-			return PlayerManager.getPlayer(args[0]).autoCompleteHomeName(args.length < 2 ? "" : args[0]);
+			return PlayerManager.getPlayer(args[0]).autoCompleteHomeName(args.length < 2 ? "" : args[1]);
 		}
 
-		return null;
+		return Arrays.asList("Unknown_player");
 	}
 
 }

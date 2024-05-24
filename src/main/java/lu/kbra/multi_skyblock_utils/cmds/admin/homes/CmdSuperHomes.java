@@ -35,7 +35,7 @@ public class CmdSuperHomes implements CommandExecutor, TabCompleter {
 
 			if (pd.getHomes().size() > 0) {
 				pd.getHomes().entrySet().forEach(s -> {
-					sender.sendMessage(ChatColor.WHITE + " - " + ChatColor.GREEN + s.getKey() + ChatColor.GRAY + "(" + s.getValue().getBlockX() + ", " + s.getValue().getBlockY() + ", " + s.getValue().getBlockZ() + ")");
+					sender.sendMessage(ChatColor.WHITE + " - " + ChatColor.GREEN + s.getKey() + ChatColor.GRAY + " (" + s.getValue().getBlockX() + ", " + s.getValue().getBlockY() + ", " + s.getValue().getBlockZ() + ")");
 				});
 			} else {
 				sender.sendMessage(ChatColor.RED + "This player doesn't have any homes :'(");

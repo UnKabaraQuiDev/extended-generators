@@ -1,4 +1,4 @@
-package lu.kbra.multi_skyblock_utils.cmds.island;
+package lu.kbra.multi_skyblock_utils.cmds.admin.island;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 import lu.kbra.multi_skyblock_utils.data.PlayerData;
 import lu.kbra.multi_skyblock_utils.data.PlayerManager;
 
-public class CmdIsland implements CommandExecutor, TabCompleter {
+public class CmdSuperIsland implements CommandExecutor, TabCompleter {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -26,12 +26,6 @@ public class CmdIsland implements CommandExecutor, TabCompleter {
 		Location loc;
 
 		if (args.length > 0) {
-
-			if (PlayerManager.getPlayer(player).isConfinedIsland()) {
-				sender.sendMessage(ChatColor.RED + "You have been confined to your island !");
-
-				return false;
-			}
 
 			String playerName = args[0];
 

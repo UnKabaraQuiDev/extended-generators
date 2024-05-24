@@ -5,6 +5,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.world.WorldSaveEvent;
 
+import lu.kbra.multi_skyblock_utils.MultiSkyblockUtils;
 import lu.kbra.multi_skyblock_utils.data.PlayerManager;
 
 public class PlayerManagerListener implements Listener {
@@ -17,6 +18,7 @@ public class PlayerManagerListener implements Listener {
 	@EventHandler
 	public void onWorldSave(WorldSaveEvent event) {
 		PlayerManager.save();
+		MultiSkyblockUtils.INSTANCE.getLogger().info("Player datas saved (world save)");
 	}
 
 }

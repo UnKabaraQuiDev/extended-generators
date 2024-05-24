@@ -5,13 +5,15 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import lu.kbra.multi_skyblock_utils.cmds.admin.CmdClearConfig;
-import lu.kbra.multi_skyblock_utils.cmds.admin.CmdConfine;
+import lu.kbra.multi_skyblock_utils.cmds.admin.CmdConfineHome;
+import lu.kbra.multi_skyblock_utils.cmds.admin.CmdConfineIsland;
 import lu.kbra.multi_skyblock_utils.cmds.admin.CmdReloadConfig;
 import lu.kbra.multi_skyblock_utils.cmds.admin.CmdSaveConfig;
 import lu.kbra.multi_skyblock_utils.cmds.admin.homes.CmdSuperDelHome;
 import lu.kbra.multi_skyblock_utils.cmds.admin.homes.CmdSuperHome;
 import lu.kbra.multi_skyblock_utils.cmds.admin.homes.CmdSuperHomes;
 import lu.kbra.multi_skyblock_utils.cmds.admin.homes.CmdSuperSetHome;
+import lu.kbra.multi_skyblock_utils.cmds.admin.island.CmdSuperConfigIsland;
 import lu.kbra.multi_skyblock_utils.cmds.homes.CmdDelHome;
 import lu.kbra.multi_skyblock_utils.cmds.homes.CmdHome;
 import lu.kbra.multi_skyblock_utils.cmds.homes.CmdHomes;
@@ -58,11 +60,14 @@ public class MultiSkyblockUtils extends JavaPlugin {
 		registerCommand("delhome", new CmdDelHome(), home);
 		registerCommand("sethome", new CmdSetHome(), home);
 
-		registerCommand("confine", new CmdConfine());
+		registerCommand("confineis", new CmdConfineIsland());
+		registerCommand("confinehome", new CmdConfineHome());
 
 		registerCommand("reloadconfig", new CmdReloadConfig());
 		registerCommand("clearconfig", new CmdClearConfig());
 		registerCommand("saveconfig", new CmdSaveConfig());
+		
+		registerCommand("superconfigisland", new CmdSuperConfigIsland());
 		
 		CmdSuperHome superHome = new CmdSuperHome();
 		registerCommand("superhome", superHome);
