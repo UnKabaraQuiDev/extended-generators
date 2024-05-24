@@ -7,6 +7,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import lu.kbra.multi_skyblock_utils.cmds.admin.CmdClearConfig;
 import lu.kbra.multi_skyblock_utils.cmds.admin.CmdConfine;
 import lu.kbra.multi_skyblock_utils.cmds.admin.CmdReloadConfig;
+import lu.kbra.multi_skyblock_utils.cmds.admin.CmdSaveConfig;
+import lu.kbra.multi_skyblock_utils.cmds.admin.homes.CmdSuperDelHome;
+import lu.kbra.multi_skyblock_utils.cmds.admin.homes.CmdSuperHome;
+import lu.kbra.multi_skyblock_utils.cmds.admin.homes.CmdSuperHomes;
+import lu.kbra.multi_skyblock_utils.cmds.admin.homes.CmdSuperSetHome;
 import lu.kbra.multi_skyblock_utils.cmds.homes.CmdDelHome;
 import lu.kbra.multi_skyblock_utils.cmds.homes.CmdHome;
 import lu.kbra.multi_skyblock_utils.cmds.homes.CmdHomes;
@@ -45,23 +50,25 @@ public class MultiSkyblockUtils extends JavaPlugin {
 		PlayerManager.enable();
 
 		registerCommand("island", new CmdIsland());
-		
 		registerCommand("configisland", new CmdConfigIsland());
-
-		registerCommand("confine", new CmdConfine());
-		
-		registerCommand("reloadconfig", new CmdReloadConfig());
-
-		registerCommand("clearconfig", new CmdClearConfig());
 
 		CmdHome home = new CmdHome();
 		registerCommand("home", home);
-
 		registerCommand("homes", new CmdHomes());
-
 		registerCommand("delhome", new CmdDelHome(), home);
+		registerCommand("sethome", new CmdSetHome(), home);
 
-		registerCommand("sethome", new CmdSetHome());
+		registerCommand("confine", new CmdConfine());
+
+		registerCommand("reloadconfig", new CmdReloadConfig());
+		registerCommand("clearconfig", new CmdClearConfig());
+		registerCommand("saveconfig", new CmdSaveConfig());
+		
+		CmdSuperHome superHome = new CmdSuperHome();
+		registerCommand("superhome", superHome);
+		registerCommand("superhomes", new CmdSuperHomes());
+		registerCommand("superdelhome", new CmdSuperDelHome(), superHome);
+		registerCommand("supersethome", new CmdSuperSetHome(), superHome);
 
 		getServer().getPluginManager().registerEvents(new PlayerManagerListener(), this);
 		getServer().getPluginManager().registerEvents(new PlayerWorldInteractionListener(), this);
@@ -77,10 +84,10 @@ public class MultiSkyblockUtils extends JavaPlugin {
 	private void registerCommand(String name, CommandExecutor exec) {
 		registerCommand(name, exec, exec instanceof TabCompleter ? (TabCompleter) exec : null);
 	}
-	
+
 	private void registerCommand(String name, CommandExecutor exec, TabCompleter tab) {
 		getCommand(name).setExecutor(exec);
-		if(tab != null) {
+		if (tab != null) {
 			getCommand(name).setTabCompleter(tab);
 		}
 	}

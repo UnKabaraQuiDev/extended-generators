@@ -14,6 +14,9 @@ commands:
   reloadconfig:
     name: "reloadconfig"
     permission: op
+  saveconfig:
+    name: "saveconfig"
+    permission: op
   configisland:
     name: "configisland"
     aliases: ["cis"]
@@ -32,3 +35,19 @@ commands:
   delhome:
     name: "delhome"
     aliases: ["dh"]
+  superhome:
+    name: "superhome"
+    aliases: ["s_h"]
+    permission: op
+  superhomes:
+    name: "superhomes"
+    aliases: ["s_hs"]
+    permission: op
+  supersethome:
+    name: "supersethome"
+    aliases: ["s_sh"]
+    permission: op
+  superdelhome:
+    name: "superdelhome"
+    aliases: ["s_dh"]
+    permission: op

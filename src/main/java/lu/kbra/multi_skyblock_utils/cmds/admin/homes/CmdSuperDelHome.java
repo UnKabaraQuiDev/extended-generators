@@ -1,4 +1,4 @@
-package lu.kbra.multi_skyblock_utils.cmds.homes;
+package lu.kbra.multi_skyblock_utils.cmds.admin.homes;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import lu.kbra.multi_skyblock_utils.data.PlayerData;
 import lu.kbra.multi_skyblock_utils.data.PlayerManager;
 
-public class CmdDelHome implements CommandExecutor {
+public class CmdSuperDelHome implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -18,14 +18,20 @@ public class CmdDelHome implements CommandExecutor {
 
 		Player player = (Player) sender;
 
-		if (args.length < 1) {
-			sender.sendMessage(ChatColor.RED + "Command syntax: " + ChatColor.GOLD + "delhome <name>");
+		if (args.length < 2) {
+			sender.sendMessage(ChatColor.RED + "Command syntax: " + ChatColor.GOLD + "delhome <player> <name>");
 			return false;
 		}
 
-		String name = args[0];
+		String playerName = args[0];
+		String name = args[1];
+		
+		if(!PlayerManager.knowsPlayer(playerName)) {
+			sender.sendMessage(ChatColor.RED + "Unknown player: " + ChatColor.GOLD + playerName);
+			return false;
+		}
 
-		PlayerData pd = PlayerManager.getPlayer(player);
+		PlayerData pd = PlayerManager.getPlayer(playerName);
 
 		if (!pd.getHomes().containsKey(name)) {
 			sender.sendMessage(ChatColor.RED + "No home named: " + ChatColor.GREEN + name);

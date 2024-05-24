@@ -43,7 +43,7 @@ public class CmdHomes implements CommandExecutor, TabCompleter {
 
 		}
 
-		return true;
+		return false;
 	}
 
 	@Override

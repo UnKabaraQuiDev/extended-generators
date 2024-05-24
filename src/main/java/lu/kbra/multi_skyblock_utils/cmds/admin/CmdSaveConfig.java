@@ -8,16 +8,16 @@ import org.bukkit.command.CommandSender;
 import lu.kbra.multi_skyblock_utils.MultiSkyblockUtils;
 import lu.kbra.multi_skyblock_utils.data.PlayerManager;
 
-public class CmdReloadConfig implements CommandExecutor {
+public class CmdSaveConfig implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		MultiSkyblockUtils.INSTANCE.reloadConfig();
-		sender.sendMessage(ChatColor.GOLD + "Plugin config reloaded !");
+		MultiSkyblockUtils.INSTANCE.saveConfig();
+		sender.sendMessage(ChatColor.GOLD + "Plugin config saved !");
 
-		PlayerManager.reload();
-		sender.sendMessage(ChatColor.GOLD + "Player datas reloaded !");
-
+		PlayerManager.save();
+		sender.sendMessage(ChatColor.GOLD + "Player datas saved !");
+		
 		return false;
 	}
 

@@ -36,7 +36,7 @@ public class CmdSetHome implements CommandExecutor {
 		
 		sender.sendMessage(ChatColor.GOLD + "Set home: " + ChatColor.GREEN + name);
 		
-		return true;
+		return false;
 	}
 
 }
