@@ -119,7 +119,7 @@ public class WorldWorldInteractionListener implements Listener {
 
 		event.getPlayer().sendMessage(ChatColor.WHITE + "- Basic generator: ");
 		basicProbabilities.forEach((Pair<Material, Double> pair) -> {
-			event.getPlayer().sendMessage(ChatColor.WHITE + " | - " + ChatColor.GREEN + pair.getKey() + ChatColor.WHITE + " -> " + ChatColor.YELLOW + pair.getValue() + "%");
+			event.getPlayer().sendMessage(ChatColor.WHITE + " |- " + ChatColor.GREEN + pair.getKey() + ChatColor.WHITE + " -> " + ChatColor.YELLOW + pair.getValue() + "%");
 		});
 
 		event.getPlayer().sendMessage(ChatColor.WHITE + "- Advanced generators: ");
