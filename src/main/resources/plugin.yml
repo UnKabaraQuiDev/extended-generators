@@ -60,3 +60,5 @@ commands:
     name: "superdelhome"
     aliases: ["s_dh"]
     permission: op
+  genstats:
+    name: "genstats"

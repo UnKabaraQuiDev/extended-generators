@@ -4,6 +4,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import lu.pcy113.pclib.pointer.prim.LongPointer;
+
 import lu.kbra.multi_skyblock_utils.cmds.admin.CmdClearConfig;
 import lu.kbra.multi_skyblock_utils.cmds.admin.CmdConfineHome;
 import lu.kbra.multi_skyblock_utils.cmds.admin.CmdConfineIsland;
@@ -20,6 +22,7 @@ import lu.kbra.multi_skyblock_utils.cmds.homes.CmdHomes;
 import lu.kbra.multi_skyblock_utils.cmds.homes.CmdSetHome;
 import lu.kbra.multi_skyblock_utils.cmds.island.CmdConfigIsland;
 import lu.kbra.multi_skyblock_utils.cmds.island.CmdIsland;
+import lu.kbra.multi_skyblock_utils.cmds.misc.CmdGeneratorStats;
 import lu.kbra.multi_skyblock_utils.crafts.CustomCrafts;
 import lu.kbra.multi_skyblock_utils.data.PlayerManager;
 import lu.kbra.multi_skyblock_utils.listener.PlayerManagerListener;
@@ -44,11 +47,19 @@ public class MultiSkyblockUtils extends JavaPlugin {
 	public void onDisable() {
 		PlayerManager.disable();
 
+		WorldWorldInteractionListener.INSTANCE.printProbabilitiesStats(getLogger()::info);
+
 		getLogger().info(this.getClass().getName() + " disabled !");
 	}
 
 	@Override
 	public void onEnable() {
+		try {
+			((LongPointer) Class.forName(LongPointer.class.getName()).newInstance()).increment();
+		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+			throw new RuntimeException(e);
+		}
+
 		PlayerManager.enable();
 
 		registerCommand("island", new CmdIsland());
@@ -66,14 +77,16 @@ public class MultiSkyblockUtils extends JavaPlugin {
 		registerCommand("reloadconfig", new CmdReloadConfig());
 		registerCommand("clearconfig", new CmdClearConfig());
 		registerCommand("saveconfig", new CmdSaveConfig());
-		
+
 		registerCommand("superconfigisland", new CmdSuperConfigIsland());
-		
+
 		CmdSuperHome superHome = new CmdSuperHome();
 		registerCommand("superhome", superHome);
 		registerCommand("superhomes", new CmdSuperHomes());
 		registerCommand("superdelhome", new CmdSuperDelHome(), superHome);
 		registerCommand("supersethome", new CmdSuperSetHome(), superHome);
+		
+		registerCommand("genstats", new CmdGeneratorStats());
 
 		getServer().getPluginManager().registerEvents(new PlayerManagerListener(), this);
 		getServer().getPluginManager().registerEvents(new PlayerWorldInteractionListener(), this);

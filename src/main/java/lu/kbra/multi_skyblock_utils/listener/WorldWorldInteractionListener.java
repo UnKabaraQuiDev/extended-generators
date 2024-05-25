@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Consumer;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -16,17 +17,29 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockFormEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import lu.pcy113.pclib.PCUtils;
 import lu.pcy113.pclib.Pair;
 import lu.pcy113.pclib.Pairs;
+import lu.pcy113.pclib.ReadOnlyTriplet;
+import lu.pcy113.pclib.Triplet;
+import lu.pcy113.pclib.Triplets;
+import lu.pcy113.pclib.pointer.prim.LongPointer;
 
 import lu.kbra.multi_skyblock_utils.MultiSkyblockUtils;
 
 public class WorldWorldInteractionListener implements Listener {
 
-	private List<Pair<Material, Double>> basicProbabilities;
-	private Map<Material, List<Pair<Material, Double>>> upgradedProbabilities;
+	public static WorldWorldInteractionListener INSTANCE;
+
+	public final List<Pair<Material, Double>> basicProbabilities;
+	public final Map<Material, List<Pair<Material, Double>>> upgradedProbabilities;
+
+	public final Map<Material, Map<Material, LongPointer>> upgradedGenerators = new HashMap<>();
+	public final Map<Material, LongPointer> basicGenerators = new HashMap<>();
 
 	public WorldWorldInteractionListener() {
+		INSTANCE = this;
+
 		basicProbabilities = new ArrayList<Pair<Material, Double>>();
 		MultiSkyblockUtils.INSTANCE.getConfig().getConfigurationSection("generator.basic").getValues(false).entrySet().forEach((Entry<String, Object> entry) -> {
 			System.out.println("Generator for: " + entry.getKey() + ": " + entry.getValue());
@@ -69,31 +82,40 @@ public class WorldWorldInteractionListener implements Listener {
 	public void onBlockForm(BlockFormEvent event) {
 		if (Material.COBBLESTONE.equals(event.getNewState().getType())) {
 			Block block = event.getBlock();
-			Location loc = event.getBlock().getLocation();
 
-			Material supType = block.getWorld().getBlockAt(loc.add(0, 1, 0)).getType(), botType = block.getWorld().getBlockAt(loc.subtract(0, 1, 0)).getType();
+			Triplet<Boolean, Material, List<Pair<Material, Double>>> probabilities = getProbabilities(block);
 
-			if (!upgradedProbabilities.containsKey(supType)) {
-				if (!upgradedProbabilities.containsKey(botType)) {
-					Material newType = selectWithProbability(basicProbabilities, Material.COBBLESTONE);
+			Material newType = selectWithProbability(probabilities.getThird(), Material.COBBLESTONE);
 
-					event.setCancelled(true);
-					block.getLocation().getWorld().getBlockAt(block.getLocation()).setType(newType, true);
-
-					return;
-				} else {
-					supType = botType;
-
-					Material newType = selectWithProbability(upgradedProbabilities.get(supType), Material.COBBLESTONE);
-
-					event.setCancelled(true);
-					block.getLocation().getWorld().getBlockAt(block.getLocation()).setType(newType, true);
-				}
+			if (probabilities.getFirst()) {
+				upgradedGenerators.computeIfAbsent(probabilities.getSecond(), (m) -> new HashMap<Material, LongPointer>());
+				upgradedGenerators.get(probabilities.getSecond()).computeIfAbsent(newType, (m) -> new LongPointer(0L));
+				upgradedGenerators.get(probabilities.getSecond()).get(newType).increment();
+			} else {
+				basicGenerators.computeIfAbsent(newType, (m) -> new LongPointer(0L));
+				basicGenerators.get(newType).increment();
 			}
+
+			event.setCancelled(true);
+			block.getLocation().getWorld().getBlockAt(block.getLocation()).setType(newType, true);
 
 			return;
 		}
 
+	}
+
+	public ReadOnlyTriplet<Boolean, Material, List<Pair<Material, Double>>> getProbabilities(Block block) {
+		Location loc = block.getLocation();
+
+		Material supType = block.getWorld().getBlockAt(loc.add(0, 1, 0)).getType(), botType = block.getWorld().getBlockAt(loc.subtract(0, 1, 0)).getType();
+
+		if (upgradedProbabilities.containsKey(supType)) {
+			return Triplets.readOnly(true, supType, upgradedProbabilities.get(supType));
+		} else if (upgradedProbabilities.containsKey(botType)) {
+			return Triplets.readOnly(true, botType, upgradedProbabilities.get(botType));
+		} else {
+			return Triplets.readOnly(false, null, basicProbabilities);
+		}
 	}
 
 	public static Material selectWithProbability(List<Pair<Material, Double>> probabilities, Material defaultObject) {
@@ -134,27 +156,23 @@ public class WorldWorldInteractionListener implements Listener {
 		});
 	}
 
-	@Deprecated
-	private static Material chooseType() {
-		double rand = Math.random();
-		return rand < 0.0001 ? Material.ANCIENT_DEBRIS
-				: (rand < 0.005 ? Material.DIAMOND_ORE
-						: (rand < 0.01 ? Material.GOLD_ORE
-								: (rand < 0.03 ? Material.IRON_ORE
-										: (rand < 0.08 ? Material.COAL_ORE : (rand < 0.10 ? Material.REDSTONE_ORE : (rand < 0.12 ? Material.LAPIS_ORE : (rand < 0.20 ? Material.COBBLED_DEEPSLATE : Material.COBBLESTONE)))))));
-	}
+	public void printProbabilitiesStats(Consumer<String> cons) {
+		long totalUpgraded = upgradedGenerators.values().stream().flatMap((s) -> s.values().stream()).mapToLong(LongPointer::getValue).sum();
+		long totalBasic = basicGenerators.values().stream().mapToLong(LongPointer::getValue).sum();
+		long totalAll = totalUpgraded + totalBasic;
 
-	public static void main(String[] args) {
-		HashMap<Material, Integer> counter = new HashMap<>();
-		final long MAX = 100_000_000L;
-		for (long i = 0; i < MAX; i++) {
-			Material type = chooseType();
+		cons.accept("Upgraded generators (total=" + totalUpgraded + "):");
+		upgradedGenerators.forEach((Material m, Map<Material, LongPointer> k) -> {
+			long totalThisUpgrade = k.values().stream().mapToLong((s) -> s.getValue()).sum();
+			cons.accept("- Upgrade " + m + " (total=" + totalThisUpgrade + ") :");
+			k.forEach((Material m2, LongPointer lp) -> cons.accept(" |- " + m2 + " -> " + lp.getValue() + " (" + PCUtils.round(((double) lp.getValue() / totalThisUpgrade) * 100, 2) + "% of " + m + ", "
+					+ PCUtils.round(((double) lp.getValue() / totalUpgraded) * 100, 2) + "% of upgraded generators, " + PCUtils.round(((double) lp.getValue() / totalAll) * 100, 2) + "% of total)"));
+		});
 
-			counter.put(type, counter.getOrDefault(type, 0) + 1);
-		}
+		cons.accept("Basic generators (total=" + totalBasic + "):");
+		basicGenerators.forEach((Material m, LongPointer lp) -> cons
+				.accept(" |- " + m + " -> " + lp.getValue() + " (" + PCUtils.round(((double) lp.getValue() / totalBasic) * 100, 2) + "% of basic generators, " + PCUtils.round(((double) lp.getValue() / totalAll) * 100, 2) + "% of total)"));
 
-		System.out.println("Probabilities on: " + MAX);
-		counter.entrySet().forEach(s -> System.out.println(s.getKey() + " > " + ((float) s.getValue() / MAX) * 100 + "%"));
 	}
 
 }
