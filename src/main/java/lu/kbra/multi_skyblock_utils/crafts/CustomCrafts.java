@@ -198,11 +198,11 @@ public class CustomCrafts {
 	}
 
 	public static void registerPolishedDiorite() {
-		ItemStack customItem = new ItemStack(Material.DIORITE);
+		ItemStack customItem = new ItemStack(Material.POLISHED_DIORITE);
 
 		NamespacedKey key = new NamespacedKey(MultiSkyblockUtils.INSTANCE, "msu_polished_diorite");
 
-		FurnaceRecipe recipe = new FurnaceRecipe(key, customItem, Material.POLISHED_DIORITE, 0, 150);
+		FurnaceRecipe recipe = new FurnaceRecipe(key, customItem, Material.DIORITE, 0, 150);
 
 		recipe.setCategory(CookingBookCategory.MISC);
 
@@ -210,11 +210,11 @@ public class CustomCrafts {
 	}
 
 	public static void registerPolishedAndesite() {
-		ItemStack customItem = new ItemStack(Material.ANDESITE);
+		ItemStack customItem = new ItemStack(Material.POLISHED_ANDESITE);
 
-		NamespacedKey key = new NamespacedKey(MultiSkyblockUtils.INSTANCE, "msu_polished_diorite");
+		NamespacedKey key = new NamespacedKey(MultiSkyblockUtils.INSTANCE, "msu_polished_andesite");
 
-		FurnaceRecipe recipe = new FurnaceRecipe(key, customItem, Material.POLISHED_ANDESITE, 0, 150);
+		FurnaceRecipe recipe = new FurnaceRecipe(key, customItem, Material.ANDESITE, 0, 150);
 
 		recipe.setCategory(CookingBookCategory.MISC);
 
@@ -222,11 +222,11 @@ public class CustomCrafts {
 	}
 
 	public static void registerPolishedGranite() {
-		ItemStack customItem = new ItemStack(Material.GRANITE);
+		ItemStack customItem = new ItemStack(Material.POLISHED_GRANITE);
 
 		NamespacedKey key = new NamespacedKey(MultiSkyblockUtils.INSTANCE, "msu_polished_granite");
 
-		FurnaceRecipe recipe = new FurnaceRecipe(key, customItem, Material.POLISHED_GRANITE, 0, 150);
+		FurnaceRecipe recipe = new FurnaceRecipe(key, customItem, Material.GRANITE, 0, 150);
 
 		recipe.setCategory(CookingBookCategory.MISC);
 
