@@ -180,6 +180,9 @@ public class CustomCrafts {
 
 	public static void registerFurnaceRecipes() {
 		registerLeather();
+		registerPolishedAndesite();
+		registerPolishedDiorite();
+		registerPolishedGranite();
 	}
 
 	public static void registerLeather() {
@@ -188,6 +191,42 @@ public class CustomCrafts {
 		NamespacedKey key = new NamespacedKey(MultiSkyblockUtils.INSTANCE, "msu_leather");
 
 		FurnaceRecipe recipe = new FurnaceRecipe(key, customItem, Material.ROTTEN_FLESH, 0, 150);
+
+		recipe.setCategory(CookingBookCategory.MISC);
+
+		Bukkit.addRecipe(recipe);
+	}
+
+	public static void registerPolishedDiorite() {
+		ItemStack customItem = new ItemStack(Material.DIORITE);
+
+		NamespacedKey key = new NamespacedKey(MultiSkyblockUtils.INSTANCE, "msu_polished_diorite");
+
+		FurnaceRecipe recipe = new FurnaceRecipe(key, customItem, Material.POLISHED_DIORITE, 0, 150);
+
+		recipe.setCategory(CookingBookCategory.MISC);
+
+		Bukkit.addRecipe(recipe);
+	}
+
+	public static void registerPolishedAndesite() {
+		ItemStack customItem = new ItemStack(Material.ANDESITE);
+
+		NamespacedKey key = new NamespacedKey(MultiSkyblockUtils.INSTANCE, "msu_polished_diorite");
+
+		FurnaceRecipe recipe = new FurnaceRecipe(key, customItem, Material.POLISHED_ANDESITE, 0, 150);
+
+		recipe.setCategory(CookingBookCategory.MISC);
+
+		Bukkit.addRecipe(recipe);
+	}
+
+	public static void registerPolishedGranite() {
+		ItemStack customItem = new ItemStack(Material.GRANITE);
+
+		NamespacedKey key = new NamespacedKey(MultiSkyblockUtils.INSTANCE, "msu_polished_granite");
+
+		FurnaceRecipe recipe = new FurnaceRecipe(key, customItem, Material.POLISHED_GRANITE, 0, 150);
 
 		recipe.setCategory(CookingBookCategory.MISC);
 
