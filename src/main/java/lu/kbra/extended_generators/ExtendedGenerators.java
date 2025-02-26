@@ -1,30 +1,27 @@
 package lu.kbra.extended_generators;
 
+import java.io.File;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import lu.pcy113.pclib.PCUtils;
+import lu.pcy113.pclib.config.ConfigLoader;
+import lu.pcy113.pclib.db.DataBaseConnector;
 import lu.pcy113.pclib.pointer.prim.LongPointer;
 
-import lu.kbra.extended_generators.cmds.admin.CmdClearConfig;
-import lu.kbra.extended_generators.cmds.admin.CmdConfineHome;
-import lu.kbra.extended_generators.cmds.admin.CmdConfineIsland;
-import lu.kbra.extended_generators.cmds.admin.CmdReloadConfig;
-import lu.kbra.extended_generators.cmds.admin.CmdSaveConfig;
-import lu.kbra.extended_generators.cmds.admin.homes.CmdSuperDelHome;
-import lu.kbra.extended_generators.cmds.admin.homes.CmdSuperHome;
-import lu.kbra.extended_generators.cmds.admin.homes.CmdSuperHomes;
-import lu.kbra.extended_generators.cmds.admin.homes.CmdSuperSetHome;
-import lu.kbra.extended_generators.cmds.admin.island.CmdSuperConfigIsland;
-import lu.kbra.extended_generators.cmds.homes.CmdDelHome;
-import lu.kbra.extended_generators.cmds.homes.CmdHome;
-import lu.kbra.extended_generators.cmds.homes.CmdHomes;
-import lu.kbra.extended_generators.cmds.homes.CmdSetHome;
-import lu.kbra.extended_generators.cmds.island.CmdConfigIsland;
-import lu.kbra.extended_generators.cmds.island.CmdIsland;
-import lu.kbra.extended_generators.cmds.misc.CmdGeneratorStats;
 import lu.kbra.extended_generators.crafts.CustomCrafts;
-import lu.kbra.extended_generators.db.data.PlayerManager;
+import lu.kbra.extended_generators.db.EGDataBase;
+import lu.kbra.extended_generators.db.PlayerManager;
+import lu.kbra.extended_generators.db.table.ChunkTable;
+import lu.kbra.extended_generators.db.table.GeneratorTable;
+import lu.kbra.extended_generators.db.table.PlayerTable;
 import lu.kbra.extended_generators.listener.PlayerManagerListener;
 import lu.kbra.extended_generators.listener.PlayerWorldInteractionListener;
 import lu.kbra.extended_generators.listener.WorldWorldInteractionListener;
@@ -32,6 +29,8 @@ import lu.kbra.extended_generators.listener.WorldWorldInteractionListener;
 public class ExtendedGenerators extends JavaPlugin {
 
 	public static ExtendedGenerators INSTANCE;
+
+	private DataBaseConnector connector;
 
 	@Override
 	public void onLoad() {
@@ -45,7 +44,13 @@ public class ExtendedGenerators extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		PlayerManager.disable();
+		PlayerManager.clear();
+
+		try {
+			connector.reset();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
 		WorldWorldInteractionListener.INSTANCE.printProbabilitiesStats(getLogger()::info);
 
@@ -60,34 +65,6 @@ public class ExtendedGenerators extends JavaPlugin {
 			throw new RuntimeException("PCLib not available !", e);
 		}
 
-		PlayerManager.enable();
-
-		registerCommand("island", new CmdIsland());
-		registerCommand("configisland", new CmdConfigIsland());
-
-		CmdHome home = new CmdHome();
-		registerCommand("home", home);
-		registerCommand("homes", new CmdHomes());
-		registerCommand("delhome", new CmdDelHome(), home);
-		registerCommand("sethome", new CmdSetHome(), home);
-
-		registerCommand("confineis", new CmdConfineIsland());
-		registerCommand("confinehome", new CmdConfineHome());
-
-		registerCommand("reloadconfig", new CmdReloadConfig());
-		registerCommand("clearconfig", new CmdClearConfig());
-		registerCommand("saveconfig", new CmdSaveConfig());
-
-		registerCommand("superconfigisland", new CmdSuperConfigIsland());
-
-		CmdSuperHome superHome = new CmdSuperHome();
-		registerCommand("superhome", superHome);
-		registerCommand("superhomes", new CmdSuperHomes());
-		registerCommand("superdelhome", new CmdSuperDelHome(), superHome);
-		registerCommand("supersethome", new CmdSuperSetHome(), superHome);
-		
-		registerCommand("genstats", new CmdGeneratorStats());
-
 		getServer().getPluginManager().registerEvents(new PlayerManagerListener(), this);
 		getServer().getPluginManager().registerEvents(new PlayerWorldInteractionListener(), this);
 		getServer().getPluginManager().registerEvents(new WorldWorldInteractionListener(), this);
@@ -96,7 +73,35 @@ public class ExtendedGenerators extends JavaPlugin {
 		CustomCrafts.registerShapedRecipes();
 		CustomCrafts.registerFurnaceRecipes();
 
+		try {
+			Class.forName("org.sqlite.JDBC");
+			connectDB();
+		} catch (IOException | SQLException | ClassNotFoundException e) {
+			getLogger().severe("Couldn't connect to database:");
+			e.printStackTrace();
+			Bukkit.getPluginManager().disablePlugin(this);
+		}
+
 		getLogger().info(this.getClass().getName() + " enabled !");
+	}
+
+	private void connectDB() throws IOException, SQLException {
+		final File connectorFile = new File(super.getDataFolder(), "db_connector.json");
+		PCUtils.extractFile(ExtendedGenerators.class, "db_connector.json", connectorFile);
+
+		connector = ConfigLoader.loadFromJSONFile(new DataBaseConnector() {
+			@Override
+			protected Connection createConnection() throws SQLException {
+				final String url = "jdbc:sqlite://" + getDataFolder().getAbsolutePath() + "/" + host;
+				return DriverManager.getConnection(url);
+			}
+		}, connectorFile);
+		
+		final EGDataBase db = new EGDataBase(connector);
+		// db.createDB();
+		db.create(new PlayerTable(db));
+		db.create(new ChunkTable(db));
+		db.create(new GeneratorTable(db));
 	}
 
 	private void registerCommand(String name, CommandExecutor exec) {

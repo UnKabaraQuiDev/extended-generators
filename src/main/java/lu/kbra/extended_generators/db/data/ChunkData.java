@@ -4,12 +4,12 @@ import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 
+import lu.pcy113.pclib.PCUtils;
 import lu.pcy113.pclib.db.DataBaseTable;
 import lu.pcy113.pclib.db.SQLBuilder;
 import lu.pcy113.pclib.db.annotations.GeneratedKey;
@@ -20,11 +20,12 @@ import lu.pcy113.pclib.db.annotations.UniqueKey;
 import lu.pcy113.pclib.db.impl.SQLEntry;
 import lu.pcy113.pclib.db.impl.SQLEntry.SafeSQLEntry;
 import lu.pcy113.pclib.db.impl.SQLQuery;
+import lu.pcy113.pclib.db.impl.SQLQuery.SafeSQLQuery;
 
 import lu.kbra.extended_generators.db.table.GeneratorTable;
 
 @GeneratedKey("id")
-public class GeneratorChunkData implements SafeSQLEntry {
+public class ChunkData implements SafeSQLEntry {
 
 	private int id;
 	private String posDimension;
@@ -33,10 +34,10 @@ public class GeneratorChunkData implements SafeSQLEntry {
 	private Chunk chunk;
 	private List<GeneratorData> generators;
 
-	public GeneratorChunkData() {
+	public ChunkData() {
 	}
 
-	public GeneratorChunkData(int id, String posDimension, int posX, int posZ, Chunk chunk, List<GeneratorData> generators) {
+	public ChunkData(int id, String posDimension, int posX, int posZ, Chunk chunk, List<GeneratorData> generators) {
 		this.id = id;
 		this.posDimension = posDimension;
 		this.posX = posX;
@@ -45,19 +46,19 @@ public class GeneratorChunkData implements SafeSQLEntry {
 		this.generators = generators;
 	}
 
-	public GeneratorChunkData loadAll() {
+	public ChunkData loadAll() {
 		loadBukkit();
 		loadGenerators();
 		return this;
 	}
 
-	public GeneratorChunkData loadBukkit() {
+	public ChunkData loadBukkit() {
 		this.chunk = Bukkit.getWorld(posDimension).getChunkAt(posX, posZ);
 		return this;
 	}
 
-	public GeneratorChunkData loadGenerators() {
-		this.generators = GeneratorTable.INSTANCE.query(byChunk(chunk)).run();
+	public ChunkData loadGenerators() {
+		this.generators = GeneratorTable.INSTANCE.query(GeneratorData.byChunk(id)).thenApply(PCUtils.single2SingleMultiMap()).run();
 		return this;
 	}
 
@@ -168,8 +169,48 @@ public class GeneratorChunkData implements SafeSQLEntry {
 	}
 
 	@Override
-	public GeneratorChunkData clone() {
-		return new GeneratorChunkData();
+	public ChunkData clone() {
+		return new ChunkData();
+	}
+
+	public static SQLQuery<ChunkData> byId(int d) {
+		return new SafeSQLQuery<ChunkData>() {
+			@Override
+			public String getPreparedQuerySQL(DataBaseTable<ChunkData> table) {
+				return SQLBuilder.safeSelect(table, new String[] { "id" });
+			}
+
+			@Override
+			public void updateQuerySQL(PreparedStatement stmt) throws SQLException {
+				stmt.setInt(1, d);
+			}
+
+			@Override
+			public ChunkData clone() {
+				return new ChunkData();
+			}
+		};
+	}
+
+	public static SQLQuery<ChunkData> byChunk(Chunk chunk) {
+		return new SafeSQLQuery<ChunkData>() {
+			@Override
+			public String getPreparedQuerySQL(DataBaseTable<ChunkData> table) {
+				return SQLBuilder.safeSelect(table, new String[] { "pos_dimension", "pos_x", "pos_z" });
+			}
+
+			@Override
+			public void updateQuerySQL(PreparedStatement stmt) throws SQLException {
+				stmt.setString(1, chunk.getWorld().getName());
+				stmt.setInt(2, chunk.getX());
+				stmt.setInt(3, chunk.getZ());
+			}
+
+			@Override
+			public ChunkData clone() {
+				return new ChunkData();
+			}
+		};
 	}
 
 }

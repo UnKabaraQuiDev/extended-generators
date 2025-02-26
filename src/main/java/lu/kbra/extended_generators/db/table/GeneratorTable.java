@@ -11,14 +11,14 @@ import lu.kbra.extended_generators.db.data.GeneratorData;
 
 //@formatter:off
 @DB_Table(name = "generators", columns = {
-		@Column(name = "id", type = "int", autoIncrement = true),
+		@Column(name = "id", type = "integer primary key autoincrement"),
 		@Column(name = "chunk_id", type = "int"),
 		@Column(name = "pos_x", type = "int"),
 		@Column(name = "pos_y", type = "int"),
 		@Column(name = "pos_z", type = "int")
 }, constraints = {
-		@Constraint(name = "pk_id", type = Type.PRIMARY_KEY, columns = "id"),
-		@Constraint(name = "fk_chunk_id", type = Type.FOREIGN_KEY, columns = "chunk_id", referenceTable = "chunks", referenceColumn = "id"),
+		// @Constraint(name = "pk_id", type = Type.PRIMARY_KEY, columns = "id"),
+		@Constraint(name = "fk_chunk_id", type = Type.FOREIGN_KEY, foreignKey = "chunk_id", referenceTable = "chunks", referenceColumn = "id"),
 		@Constraint(name = "uq_pos", type = Type.UNIQUE, columns = { "pos_x", "pos_y", "pos_z" })
 })
 //@formatter:on

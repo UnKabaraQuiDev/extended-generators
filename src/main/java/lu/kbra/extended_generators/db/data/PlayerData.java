@@ -1,50 +1,45 @@
 package lu.kbra.extended_generators.db.data;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map.Entry;
+import java.math.BigInteger;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
-public class PlayerData {
+import lu.pcy113.pclib.db.DataBaseTable;
+import lu.pcy113.pclib.db.SQLBuilder;
+import lu.pcy113.pclib.db.annotations.GeneratedKey;
+import lu.pcy113.pclib.db.annotations.GeneratedKeyUpdate;
+import lu.pcy113.pclib.db.annotations.GeneratedKeyUpdate.Type;
+import lu.pcy113.pclib.db.annotations.Reload;
+import lu.pcy113.pclib.db.annotations.UniqueKey;
+import lu.pcy113.pclib.db.impl.SQLEntry;
+import lu.pcy113.pclib.db.impl.SQLEntry.SafeSQLEntry;
+import lu.pcy113.pclib.db.impl.SQLQuery;
+import lu.pcy113.pclib.db.impl.SQLQuery.SafeSQLQuery;
 
+@GeneratedKey("id")
+public class PlayerData implements SafeSQLEntry {
+
+	private int id;
 	private UUID uuid;
 	private String name;
-	private Location islandLocation;
-	private boolean confinedIsland, confinedHome;
-	private List<String> blacklist = new ArrayList<>();
-	private HashMap<String, Location> homes = new HashMap<>();
 
 	public PlayerData() {
+	}
+
+	public PlayerData(Player player) {
+		this(player.getUniqueId(), player.getName());
 	}
 
 	public PlayerData(UUID uuid, String name) {
 		this.uuid = uuid;
 		this.name = name;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public UUID getUuid() {
-		return uuid;
-	}
-
-	public Location getIslandLocation() {
-		return islandLocation;
-	}
-
-	public void setIslandLocation(Location islandLocation) {
-		this.islandLocation = islandLocation;
 	}
 
 	public OfflinePlayer getOfflinePlayer() {
@@ -56,87 +51,142 @@ public class PlayerData {
 	}
 
 	public boolean isOnline() {
-		return getOnlinePlayer() != null;
+		return Optional.ofNullable(getOnlinePlayer()).map(c -> (boolean) (c == null ? false : c.isOnline())).get();
 	}
 
-	public boolean isConfinedHome() {
-		return confinedHome;
+	@GeneratedKeyUpdate(type = Type.INDEX)
+	public void generatedKeyupdate(BigInteger bigInt) {
+		this.id = bigInt.intValue();
 	}
 
-	public boolean isConfinedIsland() {
-		return confinedIsland;
+	@Reload
+	public void reload(ResultSet rs) throws SQLException {
+		this.id = rs.getInt("id");
+		this.uuid = UUID.fromString(rs.getString("uuid"));
+		this.name = rs.getString("name");
 	}
 
-	public void setConfinedHome(boolean confinedHome) {
-		this.confinedHome = confinedHome;
+	@Override
+	public <T extends SQLEntry> String getPreparedInsertSQL(DataBaseTable<T> table) {
+		return SQLBuilder.safeInsert(table, new String[] { "uuid", "name" });
 	}
 
-	public void setConfinedIsland(boolean confinedIsland) {
-		this.confinedIsland = confinedIsland;
+	@Override
+	public <T extends SQLEntry> String getPreparedUpdateSQL(DataBaseTable<T> table) {
+		return SQLBuilder.safeUpdate(table, new String[] { "name" }, new String[] { "id" });
 	}
 
-	public void addIslandBlacklist(String name) {
-		blacklist.add(PlayerManager.getPlayer(name).getUuid().toString());
+	@Override
+	public <T extends SQLEntry> String getPreparedDeleteSQL(DataBaseTable<T> table) {
+		return SQLBuilder.safeDelete(table, new String[] { "id" });
 	}
 
-	public void removeIslandBlacklist(String name) {
-		blacklist.remove(PlayerManager.getPlayer(name).getUuid().toString());
+	@Override
+	public <T extends SQLEntry> String getPreparedSelectSQL(DataBaseTable<T> table) {
+		return SQLBuilder.safeSelect(table, new String[] { "id" });
 	}
 
-	public boolean isBlacklisted(Player player) {
-		System.err.println(name + " contains: " + blacklist);
-		return blacklist.contains(player.getUniqueId().toString());
+	@Override
+	public void prepareInsertSQL(PreparedStatement stmt) throws SQLException {
+		stmt.setString(1, uuid.toString());
+		stmt.setString(2, name);
 	}
 
-	public List<String> getBlacklist() {
-		return blacklist;
+	@Override
+	public void prepareUpdateSQL(PreparedStatement stmt) throws SQLException {
+		stmt.setString(1, name);
+
+		stmt.setInt(2, id);
 	}
 
-	public void setBlacklist(List<String> blacklist) {
-		this.blacklist = blacklist;
+	@Override
+	public void prepareDeleteSQL(PreparedStatement stmt) throws SQLException {
+		stmt.setInt(1, id);
 	}
 
-	public HashMap<String, Location> getHomes() {
-		return homes;
+	@Override
+	public void prepareSelectSQL(PreparedStatement stmt) throws SQLException {
+		stmt.setInt(1, id);
 	}
 
-	public void setHomes(HashMap<String, Location> homes) {
-		this.homes = homes;
+	@Override
+	public PlayerData clone() {
+		return new PlayerData();
 	}
 
-	public void save(YamlConfiguration config) {
-		ConfigurationSection sec = config.createSection(name);
-		sec.set("name", name);
-		sec.set("uuid", uuid.toString());
-		sec.set("loc", islandLocation);
-		sec.set("confinedHome", confinedHome);
-		sec.set("confinedIsland", confinedIsland);
-		sec.set("blacklist", blacklist);
-		for (Entry<String, Location> home : homes.entrySet()) {
-			sec.set("homes." + home.getKey(), home.getValue());
-		}
+	public int getId() {
+		return id;
 	}
 
-	public PlayerData load(ConfigurationSection sec) {
-		if (sec == null)
-			return null;
-
-		this.uuid = UUID.fromString(sec.getString("uuid"));
-		this.name = sec.getString("name");
-		this.islandLocation = sec.getLocation("loc");
-		this.confinedHome = sec.getBoolean("confinedHome", sec.getBoolean("confined", false));
-		this.confinedIsland = sec.getBoolean("confinedIsland", sec.getBoolean("confined", false));
-		this.blacklist = sec.getStringList("blacklist");
-
-		if (sec.contains("homes")) {
-			sec.getConfigurationSection("homes").getValues(false).forEach((String key, Object value) -> homes.put(key, (Location) value));
-		}
-
-		return this;
+	@UniqueKey("uuid")
+	public UUID getUuid() {
+		return uuid;
 	}
 
-	public List<String> autoCompleteHomeName(String beginning) {
-		return homes.keySet().stream().filter(a -> a.toLowerCase().startsWith(beginning.toLowerCase())).collect(Collectors.toList());
+	@UniqueKey("name")
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public static SQLQuery<PlayerData> byName(String name) {
+		return new SafeSQLQuery<PlayerData>() {
+			@Override
+			public String getPreparedQuerySQL(DataBaseTable<PlayerData> table) {
+				return SQLBuilder.safeSelect(table, new String[] { "name" });
+			}
+
+			@Override
+			public void updateQuerySQL(PreparedStatement stmt) throws SQLException {
+				stmt.setString(1, name);
+			}
+
+			@Override
+			public PlayerData clone() {
+				return new PlayerData();
+			}
+		};
+	}
+
+	public static SQLQuery<PlayerData> byUUID(UUID uuid) {
+		return new SafeSQLQuery<PlayerData>() {
+			@Override
+			public String getPreparedQuerySQL(DataBaseTable<PlayerData> table) {
+				return SQLBuilder.safeSelect(table, new String[] { "uuid" });
+			}
+
+			@Override
+			public void updateQuerySQL(PreparedStatement stmt) throws SQLException {
+				stmt.setString(1, uuid.toString());
+			}
+
+			@Override
+			public PlayerData clone() {
+				return new PlayerData();
+			}
+		};
+	}
+
+	public static SQLQuery<PlayerData> byId(int id) {
+		return new SafeSQLQuery<PlayerData>() {
+			@Override
+			public String getPreparedQuerySQL(DataBaseTable<PlayerData> table) {
+				return SQLBuilder.safeSelect(table, new String[] { "id" });
+			}
+
+			@Override
+			public void updateQuerySQL(PreparedStatement stmt) throws SQLException {
+				stmt.setInt(1, id);
+			}
+
+			@Override
+			public PlayerData clone() {
+				return new PlayerData();
+			}
+		};
 	}
 
 }
