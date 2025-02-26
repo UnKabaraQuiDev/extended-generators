@@ -37,6 +37,14 @@ public class ChunkData implements SafeSQLEntry {
 	public ChunkData() {
 	}
 
+	public ChunkData(Chunk chunk) {
+		this.posDimension = chunk.getWorld().getName();
+		this.posX = chunk.getX();
+		this.posZ = chunk.getZ();
+
+		this.chunk = chunk;
+	}
+
 	public ChunkData(int id, String posDimension, int posX, int posZ, Chunk chunk, List<GeneratorData> generators) {
 		this.id = id;
 		this.posDimension = posDimension;

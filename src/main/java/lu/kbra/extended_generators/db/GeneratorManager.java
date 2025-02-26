@@ -33,4 +33,8 @@ public class GeneratorManager {
 		return GeneratorTable.INSTANCE.update(gd).thenApply(PCUtils.single2SingleMultiMap()).thenApply(data -> generatorCache.put(data.getLocation(), data));
 	}
 
+	public static NextTask<Void, GeneratorData> createGenerator(final GeneratorData gd) {
+		return GeneratorTable.INSTANCE.insertAndReload(gd).thenApply(PCUtils.single2SingleMultiMap()).thenApply(data -> generatorCache.put(data.getLocation(), data));
+	}
+
 }

@@ -27,8 +27,4 @@ public class PlayerManagerListener implements Listener {
 		ChunkManager.unload(event.getChunk());
 	}
 
-	@EventHandler
-	public void onWorldSave(WorldSaveEvent event) {
-	}
-
 }

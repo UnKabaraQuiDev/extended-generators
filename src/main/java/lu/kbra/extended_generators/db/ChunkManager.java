@@ -7,6 +7,7 @@ import org.bukkit.Chunk;
 
 import lu.pcy113.pclib.PCUtils;
 import lu.pcy113.pclib.async.NextTask;
+import lu.pcy113.pclib.db.TableHelper;
 
 import lu.kbra.extended_generators.db.data.ChunkData;
 import lu.kbra.extended_generators.db.table.ChunkTable;
@@ -16,6 +17,10 @@ public class ChunkManager {
 	public static Map<Chunk, Integer> idCache = new HashMap<>();
 	public static Map<Integer, ChunkData> chunkCache = new HashMap<>();
 
+	public static NextTask<Void, ChunkData> getOrCreateChunk(final Chunk chunk) {
+		return getOrCreateChunkId(chunk).thenCompose(ChunkManager::getChunk);
+	}
+	
 	public static NextTask<Void, ChunkData> getChunk(final Chunk chunk) {
 		return getChunkId(chunk).thenCompose(ChunkManager::getChunk);
 	}
@@ -27,6 +32,22 @@ public class ChunkManager {
 				if(data == null) {
 					return null;
 				}
+				
+				data.loadBukkit();
+				chunkCache.put(data.getId(), data);
+				idCache.put(chunk, data.getId());
+
+				return data.getId();
+			}
+
+			return idCache.get(chunk);
+		});
+	}
+	
+	public static NextTask<Void, Integer> getOrCreateChunkId(final Chunk chunk) {
+		return NextTask.create(() -> {
+			if (!idCache.containsKey(chunk)) {
+				final ChunkData data = TableHelper.<ChunkData>insertOrLoad(ChunkTable.INSTANCE, new ChunkData(chunk), ()-> ChunkData.byChunk(chunk)).run();
 				
 				data.loadBukkit();
 				chunkCache.put(data.getId(), data);

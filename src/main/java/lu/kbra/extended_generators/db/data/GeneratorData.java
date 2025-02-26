@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 
 import lu.pcy113.pclib.db.DataBaseTable;
 import lu.pcy113.pclib.db.SQLBuilder;
@@ -21,11 +22,17 @@ import lu.pcy113.pclib.db.impl.SQLQuery.SafeSQLQuery;
 
 import lu.kbra.extended_generators.db.ChunkManager;
 import lu.kbra.extended_generators.db.PlayerManager;
+import lu.kbra.extended_generators.items.GeneratorType;
 
 @GeneratedKey("id")
 public class GeneratorData implements SafeSQLEntry {
 
-	private int id, playerId, chunkId, posX, posY, posZ;
+	/** inclusive */
+	public static final int MAX_TIER = 5;
+
+	private int id, playerId, chunkId, posX, posY, posZ, tier;
+	private GeneratorType type;
+	private Material affinity;
 
 	private ChunkData chunkData;
 	private PlayerData playerData;
@@ -34,11 +41,14 @@ public class GeneratorData implements SafeSQLEntry {
 	public GeneratorData() {
 	}
 
-	public GeneratorData(PlayerData playerData, Location location) {
+	public GeneratorData(PlayerData playerData, Location location, GeneratorType type, Material affinity, int tier) {
 		this.playerId = playerData.getId();
 		this.posX = location.getBlockX();
 		this.posY = location.getBlockY();
 		this.posZ = location.getBlockZ();
+		this.type = type;
+		this.affinity = affinity;
+		this.tier = tier;
 
 		this.playerData = playerData;
 		this.location = location;
@@ -67,6 +77,11 @@ public class GeneratorData implements SafeSQLEntry {
 		this.posZ = rs.getInt("pos_z");
 	}
 
+	/** items/min */
+	public int calculateSpeed() {
+		return (int) (Math.pow(tier, 2) * 6);
+	}
+
 	public GeneratorData loadAll() {
 		loadChunk();
 		loadBukkit();
@@ -91,12 +106,12 @@ public class GeneratorData implements SafeSQLEntry {
 
 	@Override
 	public <T extends SQLEntry> String getPreparedInsertSQL(DataBaseTable<T> table) {
-		return SQLBuilder.safeInsert(table, new String[] { "player_id", "chunk_id", "pos_x", "pos_y", "pos_z" });
+		return SQLBuilder.safeInsert(table, new String[] { "player_id", "chunk_id", "pos_x", "pos_y", "pos_z", "type", "affinity", "tier" });
 	}
 
 	@Override
 	public <T extends SQLEntry> String getPreparedUpdateSQL(DataBaseTable<T> table) {
-		return SQLBuilder.safeUpdate(table, new String[] { "player_id", "chunk_id", "pos_x", "pos_y", "pos_z" }, new String[] { "id" });
+		return SQLBuilder.safeUpdate(table, new String[] { "player_id", "chunk_id", "pos_x", "pos_y", "pos_z", "type", "affinity", "tier" }, new String[] { "id" });
 	}
 
 	@Override
@@ -116,6 +131,9 @@ public class GeneratorData implements SafeSQLEntry {
 		stmt.setInt(3, posX);
 		stmt.setInt(4, posY);
 		stmt.setInt(5, posZ);
+		stmt.setString(6, type.name());
+		stmt.setString(7, affinity == null ? null : affinity.name());
+		stmt.setInt(8, tier);
 	}
 
 	@Override
@@ -125,8 +143,11 @@ public class GeneratorData implements SafeSQLEntry {
 		stmt.setInt(3, posX);
 		stmt.setInt(4, posY);
 		stmt.setInt(5, posZ);
+		stmt.setString(6, type.name());
+		stmt.setString(7, affinity == null ? null : affinity.name());
+		stmt.setInt(8, tier);
 
-		stmt.setInt(6, id);
+		stmt.setInt(9, id);
 	}
 
 	@Override
@@ -137,6 +158,10 @@ public class GeneratorData implements SafeSQLEntry {
 	@Override
 	public void prepareSelectSQL(PreparedStatement stmt) throws SQLException {
 		stmt.setInt(1, id);
+	}
+
+	public int getId() {
+		return id;
 	}
 
 	public int getPlayerId() {
@@ -182,6 +207,30 @@ public class GeneratorData implements SafeSQLEntry {
 		this.posZ = posZ;
 	}
 
+	public int getTier() {
+		return tier;
+	}
+
+	public void setTier(int tier) {
+		this.tier = tier;
+	}
+
+	public GeneratorType getType() {
+		return type;
+	}
+
+	public void setType(GeneratorType type) {
+		this.type = type;
+	}
+
+	public Material getAffinity() {
+		return affinity;
+	}
+
+	public void setAffinity(Material affinity) {
+		this.affinity = affinity;
+	}
+
 	public ChunkData getChunkData() {
 		return chunkData;
 	}
@@ -204,10 +253,6 @@ public class GeneratorData implements SafeSQLEntry {
 
 	public void setLocation(Location location) {
 		this.location = location;
-	}
-
-	public int getId() {
-		return id;
 	}
 
 	@Override

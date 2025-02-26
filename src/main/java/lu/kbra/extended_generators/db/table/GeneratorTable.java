@@ -15,7 +15,10 @@ import lu.kbra.extended_generators.db.data.GeneratorData;
 		@Column(name = "chunk_id", type = "int"),
 		@Column(name = "pos_x", type = "int"),
 		@Column(name = "pos_y", type = "int"),
-		@Column(name = "pos_z", type = "int")
+		@Column(name = "pos_z", type = "int"),
+		@Column(name = "type", type = "text"),
+		@Column(name = "affinity", type = "text", notNull = false),
+		@Column(name = "tier", type = "int", default_ = "1")
 }, constraints = {
 		// @Constraint(name = "pk_id", type = Type.PRIMARY_KEY, columns = "id"),
 		@Constraint(name = "fk_chunk_id", type = Type.FOREIGN_KEY, foreignKey = "chunk_id", referenceTable = "chunks", referenceColumn = "id"),
