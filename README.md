@@ -1,5 +1,5 @@
 # Extended Generators
-#### A minecraft 1.21.4 generator/query plugin
+#### A minecraft 1.21.4 generator/quarry plugin
 - - -
 # Dependencies:
 - [PCLib](https://github.com/UnKabaraQuiDev/PCLib)
