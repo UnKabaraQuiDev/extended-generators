@@ -1,6 +1,5 @@
 package lu.kbra.extended_generators.db.data;
 
-import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,6 +7,9 @@ import java.sql.SQLException;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
+import lu.kbra.extended_generators.db.ChunkManager;
+import lu.kbra.extended_generators.db.PlayerManager;
+import lu.kbra.extended_generators.items.GeneratorType;
 import lu.pcy113.pclib.db.DataBaseTable;
 import lu.pcy113.pclib.db.SQLBuilder;
 import lu.pcy113.pclib.db.annotations.GeneratedKey;
@@ -19,10 +21,6 @@ import lu.pcy113.pclib.db.impl.SQLEntry;
 import lu.pcy113.pclib.db.impl.SQLEntry.SafeSQLEntry;
 import lu.pcy113.pclib.db.impl.SQLQuery;
 import lu.pcy113.pclib.db.impl.SQLQuery.SafeSQLQuery;
-
-import lu.kbra.extended_generators.db.ChunkManager;
-import lu.kbra.extended_generators.db.PlayerManager;
-import lu.kbra.extended_generators.items.GeneratorType;
 
 @GeneratedKey("id")
 public class GeneratorData implements SafeSQLEntry {
@@ -63,7 +61,7 @@ public class GeneratorData implements SafeSQLEntry {
 	}
 
 	@GeneratedKeyUpdate(type = Type.INDEX)
-	public void generatedKeyUpdate(BigInteger bigInt) {
+	public void generatedKeyUpdate(Integer bigInt) {
 		this.id = bigInt.intValue();
 	}
 
@@ -75,6 +73,8 @@ public class GeneratorData implements SafeSQLEntry {
 		this.posX = rs.getInt("pos_x");
 		this.posY = rs.getInt("pos_y");
 		this.posZ = rs.getInt("pos_z");
+		this.type = GeneratorType.valueOf(rs.getString("type"));
+		this.affinity = rs.getString("affinity") == null ? null : Material.valueOf(rs.getString("affinity"));
 	}
 
 	/** items/min */
@@ -253,6 +253,12 @@ public class GeneratorData implements SafeSQLEntry {
 
 	public void setLocation(Location location) {
 		this.location = location;
+	}
+
+	@Override
+	public String toString() {
+		return "GeneratorData [id=" + id + ", playerId=" + playerId + ", chunkId=" + chunkId + ", posX=" + posX + ", posY=" + posY + ", posZ=" + posZ + ", tier=" + tier + ", type=" + type + ", affinity=" + affinity + ", chunkData="
+				+ chunkData + ", playerData=" + playerData + ", location=" + location + "]";
 	}
 
 	@Override

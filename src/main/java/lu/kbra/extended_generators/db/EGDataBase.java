@@ -3,12 +3,11 @@ package lu.kbra.extended_generators.db;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
+import lu.kbra.extended_generators.ExtendedGenerators;
 import lu.pcy113.pclib.db.DataBase;
 import lu.pcy113.pclib.db.DataBaseConnector;
 import lu.pcy113.pclib.db.DataBaseTable;
 import lu.pcy113.pclib.db.annotations.DB_Base;
-
-import lu.kbra.extended_generators.ExtendedGenerators;
 
 @DB_Base(name = "extended_generators")
 public class EGDataBase extends DataBase {

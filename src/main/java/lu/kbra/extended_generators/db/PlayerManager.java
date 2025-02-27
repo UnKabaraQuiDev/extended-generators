@@ -6,11 +6,10 @@ import java.util.UUID;
 
 import org.bukkit.entity.Player;
 
-import lu.pcy113.pclib.PCUtils;
-import lu.pcy113.pclib.async.NextTask;
-
 import lu.kbra.extended_generators.db.data.PlayerData;
 import lu.kbra.extended_generators.db.table.PlayerTable;
+import lu.pcy113.pclib.PCUtils;
+import lu.pcy113.pclib.async.NextTask;
 
 public class PlayerManager {
 
@@ -59,18 +58,6 @@ public class PlayerManager {
 	}
 
 	public static void join(Player player) {
-		/*PlayerTable.INSTANCE.query(new UnsafeSQLQuery<PlayerData>() {
-			@Override
-			public String getQuerySQL(DataBaseTable table) {
-				return "select * from players;";
-			}
-
-			@Override
-			public PlayerData clone() {
-				return new PlayerData();
-			}
-		}).thenApply(PCUtils.single2SingleMultiMap()).thenConsume(System.out::println).run();*/
-
 		knowsPlayer(player).thenConsume(b -> {
 			System.out.println(b);
 			if (b) {

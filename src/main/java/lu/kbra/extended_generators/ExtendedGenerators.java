@@ -10,11 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import lu.pcy113.pclib.PCUtils;
-import lu.pcy113.pclib.config.ConfigLoader;
-import lu.pcy113.pclib.db.DataBaseConnector;
-import lu.pcy113.pclib.pointer.prim.LongPointer;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import lu.kbra.extended_generators.crafts.CustomCrafts;
 import lu.kbra.extended_generators.db.EGDataBase;
@@ -25,6 +21,10 @@ import lu.kbra.extended_generators.db.table.PlayerTable;
 import lu.kbra.extended_generators.listener.PlayerManagerListener;
 import lu.kbra.extended_generators.listener.PlayerWorldInteractionListener;
 import lu.kbra.extended_generators.listener.WorldWorldInteractionListener;
+import lu.pcy113.pclib.PCUtils;
+import lu.pcy113.pclib.config.ConfigLoader;
+import lu.pcy113.pclib.db.DataBaseConnector;
+import lu.pcy113.pclib.pointer.prim.LongPointer;
 
 public class ExtendedGenerators extends JavaPlugin {
 
@@ -113,6 +113,15 @@ public class ExtendedGenerators extends JavaPlugin {
 		if (tab != null) {
 			getCommand(name).setTabCompleter(tab);
 		}
+	}
+
+	public void run(Runnable object) {
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				object.run();
+			}
+		}.runTask(this);
 	}
 
 }

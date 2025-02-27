@@ -1,13 +1,12 @@
 package lu.kbra.extended_generators.db.table;
 
+import lu.kbra.extended_generators.db.data.ChunkData;
 import lu.pcy113.pclib.db.DataBase;
 import lu.pcy113.pclib.db.DataBaseTable;
 import lu.pcy113.pclib.db.annotations.Column;
 import lu.pcy113.pclib.db.annotations.Constraint;
 import lu.pcy113.pclib.db.annotations.Constraint.Type;
 import lu.pcy113.pclib.db.annotations.DB_Table;
-
-import lu.kbra.extended_generators.db.data.ChunkData;
 
 //@formatter:off
 @DB_Table(name = "chunks", columns = {

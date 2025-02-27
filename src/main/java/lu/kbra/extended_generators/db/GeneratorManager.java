@@ -5,11 +5,10 @@ import java.util.Map;
 
 import org.bukkit.Location;
 
-import lu.pcy113.pclib.PCUtils;
-import lu.pcy113.pclib.async.NextTask;
-
 import lu.kbra.extended_generators.db.data.GeneratorData;
 import lu.kbra.extended_generators.db.table.GeneratorTable;
+import lu.pcy113.pclib.PCUtils;
+import lu.pcy113.pclib.async.NextTask;
 
 public class GeneratorManager {
 
@@ -27,6 +26,10 @@ public class GeneratorManager {
 
 			return data;
 		}));
+	}
+	
+	public static NextTask<Void, Boolean> hasGenerator(final Location loc) {
+		return getGenerator(loc).thenApply(e -> e != null);
 	}
 
 	public static NextTask<Void, GeneratorData> update(final GeneratorData gd) {

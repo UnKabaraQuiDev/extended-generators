@@ -1,6 +1,5 @@
 package lu.kbra.extended_generators.db.data;
 
-import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -55,7 +54,7 @@ public class PlayerData implements SafeSQLEntry {
 	}
 
 	@GeneratedKeyUpdate(type = Type.INDEX)
-	public void generatedKeyupdate(BigInteger bigInt) {
+	public void generatedKeyupdate(Integer bigInt) {
 		this.id = bigInt.intValue();
 	}
 
@@ -109,11 +108,6 @@ public class PlayerData implements SafeSQLEntry {
 		stmt.setInt(1, id);
 	}
 
-	@Override
-	public PlayerData clone() {
-		return new PlayerData();
-	}
-
 	public int getId() {
 		return id;
 	}
@@ -130,6 +124,16 @@ public class PlayerData implements SafeSQLEntry {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@Override
+	public String toString() {
+		return "PlayerData [id=" + id + ", uuid=" + uuid + ", name=" + name + "]";
+	}
+
+	@Override
+	public PlayerData clone() {
+		return new PlayerData();
 	}
 
 	public static SQLQuery<PlayerData> byName(String name) {

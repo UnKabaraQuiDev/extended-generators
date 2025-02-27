@@ -5,12 +5,11 @@ import java.util.Map;
 
 import org.bukkit.Chunk;
 
+import lu.kbra.extended_generators.db.data.ChunkData;
+import lu.kbra.extended_generators.db.table.ChunkTable;
 import lu.pcy113.pclib.PCUtils;
 import lu.pcy113.pclib.async.NextTask;
 import lu.pcy113.pclib.db.TableHelper;
-
-import lu.kbra.extended_generators.db.data.ChunkData;
-import lu.kbra.extended_generators.db.table.ChunkTable;
 
 public class ChunkManager {
 

@@ -1,6 +1,5 @@
 package lu.kbra.extended_generators.db.data;
 
-import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,6 +8,7 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 
+import lu.kbra.extended_generators.db.table.GeneratorTable;
 import lu.pcy113.pclib.PCUtils;
 import lu.pcy113.pclib.db.DataBaseTable;
 import lu.pcy113.pclib.db.SQLBuilder;
@@ -21,8 +21,6 @@ import lu.pcy113.pclib.db.impl.SQLEntry;
 import lu.pcy113.pclib.db.impl.SQLEntry.SafeSQLEntry;
 import lu.pcy113.pclib.db.impl.SQLQuery;
 import lu.pcy113.pclib.db.impl.SQLQuery.SafeSQLQuery;
-
-import lu.kbra.extended_generators.db.table.GeneratorTable;
 
 @GeneratedKey("id")
 public class ChunkData implements SafeSQLEntry {
@@ -71,7 +69,7 @@ public class ChunkData implements SafeSQLEntry {
 	}
 
 	@GeneratedKeyUpdate(type = Type.INDEX)
-	public void generatedKeyUpdate(BigInteger bigInt) {
+	public void generatedKeyUpdate(Integer bigInt) {
 		this.id = bigInt.intValue();
 	}
 
@@ -174,6 +172,11 @@ public class ChunkData implements SafeSQLEntry {
 
 	public void setGenerators(List<GeneratorData> generators) {
 		this.generators = generators;
+	}
+
+	@Override
+	public String toString() {
+		return "ChunkData [id=" + id + ", posDimension=" + posDimension + ", posX=" + posX + ", posZ=" + posZ + ", chunk=" + chunk + ", generators=" + generators + "]";
 	}
 
 	@Override
