@@ -12,10 +12,10 @@ import lu.pcy113.pclib.PCUtils;
 
 public enum GeneratorType {
 
-	WOODS("Woods", PCUtils.hashMap(0.25, Material.OAK_WOOD, 0.15, Material.BIRCH_WOOD, 0.1, Material.SPRUCE_WOOD, 0.1, Material.JUNGLE_WOOD, 0.1, Material.DARK_OAK_WOOD, 0.1, Material.ACACIA_WOOD, 0.1, Material.MANGROVE_WOOD)),
+	WOODS("Woods", PCUtils.hashMap(0.25, Material.OAK_LOG, 0.15, Material.BIRCH_LOG, 0.1, Material.SPRUCE_LOG, 0.1, Material.JUNGLE_LOG, 0.1, Material.DARK_OAK_LOG, 0.1, Material.ACACIA_LOG, 0.1, Material.MANGROVE_LOG)),
 
 	STONES("Stones",
-			PCUtils.hashMap(0.4, Material.COBBLESTONE, 0.05, Material.STONE, 0.1, Material.DIORITE, 0.1, Material.ANDESITE, 0.05, Material.GRANITE, 0.05, Material.MOSSY_COBBLESTONE, 0.2, Material.DEEPSLATE, 0.02, Material.BASALT, 0.05,
+			PCUtils.hashMap(0.4, Material.COBBLESTONE, 0.05, Material.STONE, 0.1, Material.DIORITE, 0.1, Material.ANDESITE, 0.05, Material.GRANITE, 0.05, Material.MOSSY_COBBLESTONE, 0.2, Material.COBBLED_DEEPSLATE, 0.02, Material.BASALT, 0.05,
 					Material.NETHERRACK)),
 
 	ORGANICS("Organics", PCUtils.hashMap(0.35, Material.DIRT, 0.25, Material.GRASS_BLOCK, 0.15, Material.SAND, 0.05, Material.CLAY, 0.05, Material.GRAVEL, 0.05, Material.STONE, 0.05, Material.PODZOL, 0.05, Material.MYCELIUM)),

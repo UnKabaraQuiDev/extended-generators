@@ -30,7 +30,7 @@ public class ItemManager {
 		final ItemMeta itemMeta = itemStack.getItemMeta();
 		final int tier = Integer.parseInt(ChatColor.stripColor(itemMeta.getLore().get(0)).replace("Tier: ", ""));
 		final GeneratorType type = GeneratorType.valueOf(ChatColor.stripColor(itemMeta.getLore().get(1)).replace("Type: ", ""));
-		final Material affinity = itemMeta.getLore().get(2).contains("NONE") ? null : Material.valueOf(ChatColor.stripColor(itemMeta.getLore().get(1)).replace("Affinity: ", ""));
+		final Material affinity = itemMeta.getLore().get(2).contains("NONE") ? null : Material.valueOf(ChatColor.stripColor(itemMeta.getLore().get(2)).replace("Affinity: ", ""));
 		return new GeneratorData(pd, cd, loc, type, affinity, tier);
 	}
 

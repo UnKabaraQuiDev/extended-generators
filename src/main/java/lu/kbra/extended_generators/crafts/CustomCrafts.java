@@ -11,6 +11,8 @@ import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.recipe.CookingBookCategory;
 
 import lu.kbra.extended_generators.ExtendedGenerators;
+import lu.kbra.extended_generators.items.GeneratorType;
+import lu.kbra.extended_generators.utils.ItemManager;
 
 public class CustomCrafts {
 
@@ -30,37 +32,43 @@ public class CustomCrafts {
 	}
 
 	public static void registerGeneratorRecipes(ConfigurationSection config) {
-		registerGeneratorRecipes();
-		registerUpgradeRecipes();
+		for (final GeneratorType type : GeneratorType.values()) {
+			registerGeneratorCraftRecipes(type);
+			registerGeneratorUpgradeRecipes(type);
+		}
 	}
 
-	public static void registerGeneratorRecipes() {
-		ItemStack placeholder = new ItemStack(Material.IRON_INGOT, 1);
+	public static void registerGeneratorCraftRecipes(final GeneratorType type) {
+		for (final Material material : type.getMaterials()) {
+			ItemStack output = ItemManager.getItem(1, type, null);
 
-		NamespacedKey key = new NamespacedKey(ExtendedGenerators.INSTANCE, "eg_gen");
+			NamespacedKey key = new NamespacedKey(ExtendedGenerators.INSTANCE, ("eg_gen_craft_" + type.name() + "_" + material.name()).toLowerCase());
 
-		ShapedRecipe recipe = new ShapedRecipe(key, placeholder);
+			ShapedRecipe recipe = new ShapedRecipe(key, output);
 
-		recipe.shape("SSS", "SDS", "SSS");
+			recipe.shape("SSS", "SDS", "SSS");
 
-		recipe.setIngredient('D', Material.HOPPER);
-		recipe.setIngredient('S', Material.BEDROCK);
+			recipe.setIngredient('D', Material.HOPPER);
+			recipe.setIngredient('S', material);
 
-		Bukkit.addRecipe(recipe);
+			Bukkit.addRecipe(recipe);
+		}
 	}
 
-	public static void registerUpgradeRecipes() {
+	public static void registerGeneratorUpgradeRecipes(final GeneratorType type) {
+		for (final Material material : type.getMaterials()) {
 			ItemStack placeholder = new ItemStack(Material.IRON_INGOT, 1);
 
-			NamespacedKey key = new NamespacedKey(ExtendedGenerators.INSTANCE, "eg_gen_upgrade");
+			NamespacedKey key = new NamespacedKey(ExtendedGenerators.INSTANCE,  ("eg_gen_upgrade_" + type.name() + "_" + material.name()).toLowerCase());
 			ShapedRecipe recipe = new ShapedRecipe(key, placeholder);
 
 			recipe.shape("MMM", "MGM", "MMM");
 
 			recipe.setIngredient('G', Material.OAK_SIGN);
-			recipe.setIngredient('M', Material.BEDROCK);
+			recipe.setIngredient('M', material);
 
 			Bukkit.addRecipe(recipe);
+		}
 	}
 
 	public static void registerShapelessRecipes(ConfigurationSection config) {

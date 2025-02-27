@@ -100,7 +100,6 @@ public class GeneratorsListener implements Listener {
 		if (block == null) {
 			return;
 		}
-
 		if (!event.getPlayer().isSneaking()) {
 			return;
 		}
@@ -125,10 +124,13 @@ public class GeneratorsListener implements Listener {
 
 					gd.setAffinity(event.getMaterial());
 
-					sign.getSide(Side.FRONT).setLine(3, event.getMaterial().name());
-					sign.update();
-
 					GeneratorManager.update(gd).run();
+
+					ExtendedGenerators.INSTANCE.run(() -> {
+						sign.getSide(Side.FRONT).setLine(3, event.getMaterial().name());
+						sign.update();
+						player.sendMessage("Changed affinity to: " + event.getMaterial());
+					});
 				}).runAsync();
 			}
 		}

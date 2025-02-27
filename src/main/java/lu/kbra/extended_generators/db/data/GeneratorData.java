@@ -25,6 +25,7 @@ import lu.pcy113.pclib.db.impl.SQLEntry.SafeSQLEntry;
 import lu.pcy113.pclib.db.impl.SQLQuery;
 import lu.pcy113.pclib.db.impl.SQLQuery.SafeSQLQuery;
 
+import lu.kbra.extended_generators.ExtendedGenerators;
 import lu.kbra.extended_generators.db.ChunkManager;
 import lu.kbra.extended_generators.db.PlayerManager;
 import lu.kbra.extended_generators.items.GeneratorType;
@@ -112,10 +113,17 @@ public class GeneratorData implements SafeSQLEntry {
 			}
 		}
 
-		if (affinity == null) {
-			container.getInventory().addItem(new ItemStack(type.generateRandom()));
-		} else {
-			container.getInventory().addItem(new ItemStack(affinity));
+		try {
+			if (this.container != null) {
+				if (affinity == null) {
+					container.getInventory().addItem(new ItemStack(type.generateRandom()));
+				} else {
+					container.getInventory().addItem(new ItemStack(affinity));
+				}
+			}
+		} catch (Exception e) {
+			ExtendedGenerators.INSTANCE.getLogger().warning("Exception when generating item (" + e + "): " + this);
+			this.container = null;
 		}
 	}
 
@@ -294,8 +302,8 @@ public class GeneratorData implements SafeSQLEntry {
 
 	@Override
 	public String toString() {
-		return "GeneratorData [id=" + id + ", playerId=" + playerId + ", chunkId=" + chunkId + ", posX=" + posX + ", posY=" + posY + ", posZ=" + posZ + ", tier=" + tier + ", type=" + type + ", affinity=" + affinity + ", chunkData=" + chunkData
-				+ ", playerData=" + playerData + ", location=" + location + "]";
+		return "GeneratorData [id=" + id + ", playerId=" + playerId + ", chunkId=" + chunkId + ", posX=" + posX + ", posY=" + posY + ", posZ=" + posZ + ", tier=" + tier + ", type=" + type + ", affinity=" + affinity + ", chunkData="
+				+ (chunkData == null ? "null" : "not null") + ", playerData=" + playerData + ", location=" + location + "]";
 	}
 
 	@Override
