@@ -59,7 +59,6 @@ public class PlayerManager {
 
 	public static void join(Player player) {
 		knowsPlayer(player).thenConsume(b -> {
-			System.out.println(b);
 			if (b) {
 				final PlayerData pd = getPlayer(player).run();
 				if (!pd.getName().equals(player.getName())) {

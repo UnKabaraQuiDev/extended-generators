@@ -20,8 +20,10 @@ import lu.kbra.extended_generators.db.table.ChunkTable;
 import lu.kbra.extended_generators.db.table.GeneratorTable;
 import lu.kbra.extended_generators.db.table.PlayerTable;
 import lu.kbra.extended_generators.listener.PlayerManagerListener;
-import lu.kbra.extended_generators.listener.PlayerWorldInteractionListener;
-import lu.kbra.extended_generators.listener.WorldWorldInteractionListener;
+import lu.kbra.extended_generators.listener.GeneratorsListener;
+import lu.kbra.extended_generators.listener.CobbleGeneratorListener;
+import lu.kbra.extended_generators.listener.CustomCraftsListener;
+
 import lu.pcy113.pclib.PCUtils;
 import lu.pcy113.pclib.config.ConfigLoader;
 import lu.pcy113.pclib.db.DataBaseConnector;
@@ -53,7 +55,7 @@ public class ExtendedGenerators extends JavaPlugin {
 			e.printStackTrace();
 		}
 
-		WorldWorldInteractionListener.INSTANCE.printProbabilitiesStats(getLogger()::info);
+		// CobbleGeneratorListener.INSTANCE.printProbabilitiesStats(getLogger()::info);
 
 		getLogger().info(this.getClass().getName() + " disabled !");
 	}
@@ -63,16 +65,20 @@ public class ExtendedGenerators extends JavaPlugin {
 		try {
 			((LongPointer) Class.forName(LongPointer.class.getName()).newInstance()).increment();
 		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-			throw new RuntimeException("PCLib not available !", e);
+			getLogger().severe("PCLib not available !");
+			e.printStackTrace();
+			Bukkit.getPluginManager().disablePlugin(this);
 		}
 
 		getServer().getPluginManager().registerEvents(new PlayerManagerListener(), this);
-		getServer().getPluginManager().registerEvents(new PlayerWorldInteractionListener(), this);
-		getServer().getPluginManager().registerEvents(new WorldWorldInteractionListener(), this);
+		getServer().getPluginManager().registerEvents(new GeneratorsListener(), this);
+		getServer().getPluginManager().registerEvents(new CustomCraftsListener(), this);
 
-		CustomCrafts.registerShapelessRecipes();
-		CustomCrafts.registerShapedRecipes();
-		CustomCrafts.registerFurnaceRecipes();
+		if (getConfig().getBoolean("generator.enabled")) {
+			getServer().getPluginManager().registerEvents(new CobbleGeneratorListener(), this);
+		}
+
+		CustomCrafts.registerRecipes(getConfig().getConfigurationSection("crafts"));
 
 		try {
 			Class.forName("org.sqlite.JDBC");
@@ -84,7 +90,7 @@ public class ExtendedGenerators extends JavaPlugin {
 		}
 
 		GeneratorManager.init();
-		
+
 		getLogger().info(this.getClass().getName() + " enabled !");
 	}
 
@@ -99,7 +105,7 @@ public class ExtendedGenerators extends JavaPlugin {
 				return DriverManager.getConnection(url);
 			}
 		}, connectorFile);
-		
+
 		final EGDataBase db = new EGDataBase(connector);
 		// db.createDB();
 		db.create(new PlayerTable(db));

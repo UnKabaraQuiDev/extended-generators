@@ -26,9 +26,9 @@ import lu.pcy113.pclib.datastructure.triplet.Triplet;
 import lu.pcy113.pclib.datastructure.triplet.Triplets;
 import lu.pcy113.pclib.pointer.prim.LongPointer;
 
-public class WorldWorldInteractionListener implements Listener {
+public class CobbleGeneratorListener implements Listener {
 
-	public static WorldWorldInteractionListener INSTANCE;
+	public static CobbleGeneratorListener INSTANCE;
 
 	public final List<Pair<Material, Double>> basicProbabilities;
 	public final Map<Material, List<Pair<Material, Double>>> upgradedProbabilities;
@@ -36,7 +36,7 @@ public class WorldWorldInteractionListener implements Listener {
 	public final Map<Material, Map<Material, LongPointer>> upgradedGenerators = new HashMap<>();
 	public final Map<Material, LongPointer> basicGenerators = new HashMap<>();
 
-	public WorldWorldInteractionListener() {
+	public CobbleGeneratorListener() {
 		INSTANCE = this;
 
 		basicProbabilities = new ArrayList<Pair<Material, Double>>();

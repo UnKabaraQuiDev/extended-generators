@@ -14,6 +14,7 @@ import lu.pcy113.pclib.async.NextTask;
 import lu.kbra.extended_generators.ExtendedGenerators;
 import lu.kbra.extended_generators.db.data.ChunkData;
 import lu.kbra.extended_generators.db.data.GeneratorData;
+import lu.kbra.extended_generators.db.table.ChunkTable;
 import lu.kbra.extended_generators.db.table.GeneratorTable;
 
 public class GeneratorManager {
@@ -32,7 +33,7 @@ public class GeneratorManager {
 				for (GeneratorData gd : activeGenerators) {
 					if (gd.getTier() == 0)
 						continue;
-					
+
 					if (tick % (60 / gd.calculateSpeed()) == 0) {
 						gd.generate();
 					}
@@ -51,6 +52,10 @@ public class GeneratorManager {
 
 	public static NextTask<Void, GeneratorData> getGenerator(final Location loc) {
 		return ChunkManager.getChunkId(loc.getChunk()).thenCompose(NextTask.<Integer, GeneratorData>withArg((chunkId) -> {
+			if(generatorCache.containsKey(loc)) {
+				return generatorCache.get(loc);
+			}
+			
 			final GeneratorData data = GeneratorTable.INSTANCE.query(GeneratorData.byLocation(chunkId, loc)).thenApply(PCUtils.list2FirstMultiMap(() -> null)).run();
 			if (data == null) {
 				return null;
@@ -72,7 +77,8 @@ public class GeneratorManager {
 	}
 
 	public static NextTask<Void, GeneratorData> createGenerator(final GeneratorData gd) {
-		return GeneratorTable.INSTANCE.insertAndReload(gd).thenApply(PCUtils.single2SingleMultiMap()).thenParallel(data -> generatorCache.put(data.getLocation(), data)).thenParallel(data -> activeGenerators.add(data));
+		return GeneratorTable.INSTANCE.insertAndReload(gd).thenApply(PCUtils.single2SingleMultiMap()).thenParallel(data -> data.getChunkData().getGenerators().add(data)).thenParallel(data -> generatorCache.put(data.getLocation(), data))
+				.thenParallel(data -> activeGenerators.add(data));
 	}
 
 	public static NextTask<Void, GeneratorData> remove(final GeneratorData gd) {

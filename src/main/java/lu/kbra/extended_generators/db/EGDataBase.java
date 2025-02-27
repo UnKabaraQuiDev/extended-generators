@@ -20,7 +20,7 @@ public class EGDataBase extends DataBase {
 	
 	public void create(DataBaseTable<?> table) {
 		final String name = "`" + table.getTableName() + "`";
-		// System.out.println(table.getCreateSQL());
+
 		table.create().thenConsume((e) -> {
 			e.ifError((d) -> logger.severe("Error creating Table: " + name + "\n" + table.getCreateSQL()));
 			e.ifOk((d) -> logger.info(d.created() ? "Table: " + name + " created" : "Table: " + name + " already exists"));

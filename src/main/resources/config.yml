@@ -1,4 +1,7 @@
+
+# water/lava generators, not signs
 generator: # in %
+  enabled: true
   basic:
     "ancient_debris": 0.01
     "diamond_ore": 0.5
@@ -38,3 +41,28 @@ generator: # in %
     "netherrack": 20
     "andesite": 20
     "granite": 20
+crafts:
+  shapeless:
+    enabled: true
+    "gravel": true
+    "big_gravel": true
+    "sand": true
+    "big_sand": true
+    "cobbled_deepslate": true
+    "sapling": true
+    "dirt": true
+    "bid_dirt": true
+    "quartz": false
+  shaped:
+    enabled: true
+    "lava_bucket": false
+    "grass_block": true
+  furnace:
+    enabled: true
+    "leather": true
+    "polished_andesite": true
+    "polished_diorite": true
+    "polished_granite": true
+  generator:
+    enabled: true
+

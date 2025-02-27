@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.bukkit.Chunk;
 
+import lu.kbra.extended_generators.ExtendedGenerators;
 import lu.kbra.extended_generators.db.data.ChunkData;
 import lu.kbra.extended_generators.db.table.ChunkTable;
 import lu.pcy113.pclib.PCUtils;
@@ -84,14 +85,14 @@ public class ChunkManager {
 
 	public static void load(Chunk chunk) {
 		getChunk(chunk).thenConsume(cd -> {
-			cd.setGenerators(GeneratorManager.getGenerators(cd).thenParallel(d -> System.out.println("Loaded chunk (" + chunk.getX() + ", " + chunk.getZ() + ") and " + d.size() + " generators.")).run());
+			cd.setGenerators(GeneratorManager.getGenerators(cd).thenParallel(d -> ExtendedGenerators.INSTANCE.getLogger().info("Loaded chunk (" + chunk.getX() + ", " + chunk.getZ() + ") and " + d.size() + " generators.")).run());
 		}).runAsync();
 	}
 
 	public static void unload(Chunk chunk) {
 		if (idCache.containsKey(chunk)) {
 			chunkCache.get(idCache.get(chunk)).getGenerators().forEach(GeneratorManager::unload);
-			System.out.println("Unloaded chunk (" + chunk.getX() + ", " + chunk.getZ() + ") and " + chunkCache.get(idCache.get(chunk)).getGenerators().size() + " generators.");
+			ExtendedGenerators.INSTANCE.getLogger().info("Unloaded chunk (" + chunk.getX() + ", " + chunk.getZ() + ") and " + chunkCache.get(idCache.get(chunk)).getGenerators().size() + " generators.");
 			
 			chunkCache.remove(idCache.get(chunk));
 			idCache.remove(chunk);

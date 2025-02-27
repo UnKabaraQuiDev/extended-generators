@@ -3,6 +3,7 @@ package lu.kbra.extended_generators.crafts;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
@@ -13,16 +14,74 @@ import lu.kbra.extended_generators.ExtendedGenerators;
 
 public class CustomCrafts {
 
-	public static void registerShapelessRecipes() {
-		registerGravel();
-		registerBigGravel();
-		registerSand();
-		registerBigSand();
-		registerCobbledDeepslate();
-		registerSapling();
-		registerDirt();
-		registerBigDirt();
-		registerQuartz();
+	public static void registerRecipes(ConfigurationSection config) {
+		if (config.getBoolean("shapeless.enabled")) {
+			registerShapelessRecipes(config.getConfigurationSection("shapeless"));
+		}
+		if (config.getBoolean("shaped.enabled")) {
+			registerShapedRecipes(config.getConfigurationSection("shaped"));
+		}
+		if (config.getBoolean("furnace.enabled")) {
+			registerFurnaceRecipes(config.getConfigurationSection("furnace"));
+		}
+		if (config.getBoolean("generator.enabled")) {
+			registerGeneratorRecipes(config.getConfigurationSection("generator"));
+		}
+	}
+
+	public static void registerGeneratorRecipes(ConfigurationSection config) {
+		registerGeneratorRecipes();
+		registerUpgradeRecipes();
+	}
+
+	public static void registerGeneratorRecipes() {
+		ItemStack placeholder = new ItemStack(Material.IRON_INGOT, 1);
+
+		NamespacedKey key = new NamespacedKey(ExtendedGenerators.INSTANCE, "eg_gen");
+
+		ShapedRecipe recipe = new ShapedRecipe(key, placeholder);
+
+		recipe.shape("SSS", "SDS", "SSS");
+
+		recipe.setIngredient('D', Material.HOPPER);
+		recipe.setIngredient('S', Material.BEDROCK);
+
+		Bukkit.addRecipe(recipe);
+	}
+
+	public static void registerUpgradeRecipes() {
+			ItemStack placeholder = new ItemStack(Material.IRON_INGOT, 1);
+
+			NamespacedKey key = new NamespacedKey(ExtendedGenerators.INSTANCE, "eg_gen_upgrade");
+			ShapedRecipe recipe = new ShapedRecipe(key, placeholder);
+
+			recipe.shape("MMM", "MGM", "MMM");
+
+			recipe.setIngredient('G', Material.OAK_SIGN);
+			recipe.setIngredient('M', Material.BEDROCK);
+
+			Bukkit.addRecipe(recipe);
+	}
+
+	public static void registerShapelessRecipes(ConfigurationSection config) {
+		if (config.getBoolean("gravel"))
+			registerGravel();
+		if (config.getBoolean("big_gravel"))
+			registerBigGravel();
+		if (config.getBoolean("sand"))
+			registerSand();
+		if (config.getBoolean("big_sand"))
+			registerBigSand();
+		if (config.getBoolean("cobbled_deepslate"))
+			registerCobbledDeepslate();
+		if (config.getBoolean("sapling"))
+			registerSapling();
+		if (config.getBoolean("dirt"))
+			registerDirt();
+		if (config.getBoolean("big_dirt"))
+			registerBigDirt();
+		if (config.getBoolean("quartz"))
+			registerQuartz();
 	}
 
 	private static void registerBigGravel() {
@@ -141,9 +200,11 @@ public class CustomCrafts {
 		Bukkit.addRecipe(recipe);
 	}
 
-	public static void registerShapedRecipes() {
-		registerLavaBucket();
-		registerGrassBlock();
+	public static void registerShapedRecipes(ConfigurationSection config) {
+		if (config.getBoolean("lava_bucket"))
+			registerLavaBucket();
+		if (config.getBoolean("grass_block"))
+			registerGrassBlock();
 	}
 
 	private static void registerLavaBucket() {
@@ -178,11 +239,15 @@ public class CustomCrafts {
 		Bukkit.addRecipe(recipe);
 	}
 
-	public static void registerFurnaceRecipes() {
-		registerLeather();
-		registerPolishedAndesite();
-		registerPolishedDiorite();
-		registerPolishedGranite();
+	public static void registerFurnaceRecipes(ConfigurationSection config) {
+		if (config.getBoolean("leather"))
+			registerLeather();
+		if (config.getBoolean("polished_andesite"))
+			registerPolishedAndesite();
+		if (config.getBoolean("polished_diorite"))
+			registerPolishedDiorite();
+		if (config.getBoolean("polished_granite"))
+			registerPolishedGranite();
 	}
 
 	public static void registerLeather() {

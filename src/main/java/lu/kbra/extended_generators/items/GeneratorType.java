@@ -1,7 +1,10 @@
 package lu.kbra.extended_generators.items;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.bukkit.Material;
 
@@ -18,8 +21,8 @@ public enum GeneratorType {
 	ORGANICS("Organics", PCUtils.hashMap(0.35, Material.DIRT, 0.25, Material.GRASS_BLOCK, 0.15, Material.SAND, 0.05, Material.CLAY, 0.05, Material.GRAVEL, 0.05, Material.STONE, 0.05, Material.PODZOL, 0.05, Material.MYCELIUM)),
 
 	PLANTS("Plants",
-			PCUtils.hashMap(0.4, Material.SHORT_GRASS, 0.2, Material.TALL_GRASS, 0.1, Material.DANDELION, 0.1, Material.POPPY, 0.05, Material.BLUE_ORCHID, 0.1, Material.TALL_GRASS, 0.05, Material.FERN, 0.05, Material.ALLIUM, 0.05,
-					Material.OXEYE_DAISY, 0.05, Material.LILY_OF_THE_VALLEY)),
+			PCUtils.hashMap(0.4, Material.SHORT_GRASS, 0.2, Material.DANDELION, 0.1, Material.POPPY, 0.05, Material.BLUE_ORCHID, 0.1, Material.TALL_GRASS, 0.05, Material.FERN, 0.05, Material.ALLIUM, 0.05, Material.OXEYE_DAISY, 0.05,
+					Material.LILY_OF_THE_VALLEY)),
 
 	ORES("Ores",
 			PCUtils.hashMap(0.625, Material.COAL_ORE, 0.42, Material.IRON_ORE, 0.20, Material.COPPER_ORE, 0.125, Material.GOLD_ORE, 0.04, Material.REDSTONE_ORE, 0.02, Material.LAPIS_ORE, 0.008, Material.DIAMOND_ORE, 0.001, Material.EMERALD_ORE, 0.9,
@@ -31,6 +34,7 @@ public enum GeneratorType {
 	private String name;
 	private HashMap<Double, Material> items;
 	private double totalProbability;
+	private List<Material> materials;
 
 	private GeneratorType(String name, HashMap<Double, Material> items) {
 		this.name = name;
@@ -39,6 +43,8 @@ public enum GeneratorType {
 		for (Double probability : items.keySet()) {
 			totalProbability += probability;
 		}
+
+		this.materials = items.values().stream().collect(Collectors.toList());
 	}
 
 	public String getName() {
@@ -61,6 +67,14 @@ public enum GeneratorType {
 		}
 
 		return null;
+	}
+
+	public List<Material> getMaterials() {
+		return materials;
+	}
+
+	public static GeneratorType byItem(Material type) {
+		return Arrays.stream(values()).filter((GeneratorType c) -> c.materials.contains(type)).findFirst().orElse(null);
 	}
 
 }
