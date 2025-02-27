@@ -6,10 +6,13 @@ import java.sql.SQLException;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.Container;
+import org.bukkit.block.Sign;
+import org.bukkit.block.data.type.WallSign;
+import org.bukkit.inventory.ItemStack;
 
-import lu.kbra.extended_generators.db.ChunkManager;
-import lu.kbra.extended_generators.db.PlayerManager;
-import lu.kbra.extended_generators.items.GeneratorType;
 import lu.pcy113.pclib.db.DataBaseTable;
 import lu.pcy113.pclib.db.SQLBuilder;
 import lu.pcy113.pclib.db.annotations.GeneratedKey;
@@ -21,6 +24,10 @@ import lu.pcy113.pclib.db.impl.SQLEntry;
 import lu.pcy113.pclib.db.impl.SQLEntry.SafeSQLEntry;
 import lu.pcy113.pclib.db.impl.SQLQuery;
 import lu.pcy113.pclib.db.impl.SQLQuery.SafeSQLQuery;
+
+import lu.kbra.extended_generators.db.ChunkManager;
+import lu.kbra.extended_generators.db.PlayerManager;
+import lu.kbra.extended_generators.items.GeneratorType;
 
 @GeneratedKey("id")
 public class GeneratorData implements SafeSQLEntry {
@@ -36,10 +43,13 @@ public class GeneratorData implements SafeSQLEntry {
 	private PlayerData playerData;
 	private Location location;
 
+	private Container container;
+
 	public GeneratorData() {
 	}
 
-	public GeneratorData(PlayerData playerData, Location location, GeneratorType type, Material affinity, int tier) {
+	public GeneratorData(PlayerData playerData, ChunkData chunkData, Location location, GeneratorType type, Material affinity, int tier) {
+		this.chunkId = chunkData.getId();
 		this.playerId = playerData.getId();
 		this.posX = location.getBlockX();
 		this.posY = location.getBlockY();
@@ -48,16 +58,20 @@ public class GeneratorData implements SafeSQLEntry {
 		this.affinity = affinity;
 		this.tier = tier;
 
+		this.chunkData = chunkData;
 		this.playerData = playerData;
 		this.location = location;
 	}
 
-	public GeneratorData(int playerId, int chunkId, int posX, int posY, int posZ) {
+	public GeneratorData(int playerId, int chunkId, int posX, int posY, int posZ, GeneratorType type, Material affinity, int tier) {
 		this.playerId = playerId;
 		this.chunkId = chunkId;
 		this.posX = posX;
 		this.posY = posY;
 		this.posZ = posZ;
+		this.type = type;
+		this.affinity = affinity;
+		this.tier = tier;
 	}
 
 	@GeneratedKeyUpdate(type = Type.INDEX)
@@ -75,11 +89,34 @@ public class GeneratorData implements SafeSQLEntry {
 		this.posZ = rs.getInt("pos_z");
 		this.type = GeneratorType.valueOf(rs.getString("type"));
 		this.affinity = rs.getString("affinity") == null ? null : Material.valueOf(rs.getString("affinity"));
+		this.tier = rs.getInt("tier");
 	}
 
 	/** items/min */
 	public int calculateSpeed() {
 		return (int) (Math.pow(tier, 2) * 6);
+	}
+
+	public void generate() {
+		if (this.container == null) {
+			final Block block = location.getBlock();
+
+			if (block.getState() instanceof final Sign sign) {
+				BlockFace face = ((WallSign) sign.getBlockData()).getFacing();
+
+				Block behindBlock = block.getRelative(face.getOppositeFace());
+
+				if (behindBlock.getState() instanceof Container container) {
+					this.container = container;
+				}
+			}
+		}
+
+		if (affinity == null) {
+			container.getInventory().addItem(new ItemStack(type.generateRandom()));
+		} else {
+			container.getInventory().addItem(new ItemStack(affinity));
+		}
 	}
 
 	public GeneratorData loadAll() {
@@ -257,8 +294,8 @@ public class GeneratorData implements SafeSQLEntry {
 
 	@Override
 	public String toString() {
-		return "GeneratorData [id=" + id + ", playerId=" + playerId + ", chunkId=" + chunkId + ", posX=" + posX + ", posY=" + posY + ", posZ=" + posZ + ", tier=" + tier + ", type=" + type + ", affinity=" + affinity + ", chunkData="
-				+ chunkData + ", playerData=" + playerData + ", location=" + location + "]";
+		return "GeneratorData [id=" + id + ", playerId=" + playerId + ", chunkId=" + chunkId + ", posX=" + posX + ", posY=" + posY + ", posZ=" + posZ + ", tier=" + tier + ", type=" + type + ", affinity=" + affinity + ", chunkData=" + chunkData
+				+ ", playerData=" + playerData + ", location=" + location + "]";
 	}
 
 	@Override

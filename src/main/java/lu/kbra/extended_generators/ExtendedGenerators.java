@@ -14,6 +14,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import lu.kbra.extended_generators.crafts.CustomCrafts;
 import lu.kbra.extended_generators.db.EGDataBase;
+import lu.kbra.extended_generators.db.GeneratorManager;
 import lu.kbra.extended_generators.db.PlayerManager;
 import lu.kbra.extended_generators.db.table.ChunkTable;
 import lu.kbra.extended_generators.db.table.GeneratorTable;
@@ -82,6 +83,8 @@ public class ExtendedGenerators extends JavaPlugin {
 			Bukkit.getPluginManager().disablePlugin(this);
 		}
 
+		GeneratorManager.init();
+		
 		getLogger().info(this.getClass().getName() + " enabled !");
 	}
 

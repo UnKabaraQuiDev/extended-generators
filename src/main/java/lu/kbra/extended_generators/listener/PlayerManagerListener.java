@@ -20,6 +20,8 @@ import lu.kbra.extended_generators.db.table.ChunkTable;
 import lu.kbra.extended_generators.db.table.GeneratorTable;
 import lu.kbra.extended_generators.db.table.PlayerTable;
 import lu.kbra.extended_generators.items.GeneratorType;
+import lu.kbra.extended_generators.utils.ItemManager;
+
 import lu.pcy113.pclib.PCUtils;
 import lu.pcy113.pclib.db.DataBaseTable;
 import lu.pcy113.pclib.db.impl.SQLQuery.UnsafeSQLQuery;
@@ -66,13 +68,7 @@ public class PlayerManagerListener implements Listener {
 			}
 		}).thenApply(PCUtils.single2SingleMultiMap()).thenConsume(System.out::println).run();
 
-		final ItemStack itemStack = new ItemStack(Material.OAK_SIGN);
-		final ItemMeta itemMeta = itemStack.getItemMeta();
-		itemMeta.setDisplayName(PlayerWorldInteractionListener.TITLE);
-		itemMeta.setLore(Arrays.asList("Tier: 1", "Type: " + GeneratorType.ORES, "Affinity: NONE"));
-		itemStack.setItemMeta(itemMeta);
-
-		event.getPlayer().getInventory().addItem(itemStack);
+		event.getPlayer().getInventory().addItem(ItemManager.getItem(1, GeneratorType.ORES, null));
 	}
 
 	@EventHandler
