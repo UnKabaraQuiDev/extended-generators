@@ -6,20 +6,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 
-import lu.pcy113.pclib.PCUtils;
-import lu.pcy113.pclib.db.DataBaseTable;
-import lu.pcy113.pclib.db.impl.SQLQuery.UnsafeSQLQuery;
-
 import lu.kbra.extended_generators.db.ChunkManager;
 import lu.kbra.extended_generators.db.PlayerManager;
-import lu.kbra.extended_generators.db.data.ChunkData;
-import lu.kbra.extended_generators.db.data.GeneratorData;
-import lu.kbra.extended_generators.db.data.PlayerData;
-import lu.kbra.extended_generators.db.table.ChunkTable;
-import lu.kbra.extended_generators.db.table.GeneratorTable;
-import lu.kbra.extended_generators.db.table.PlayerTable;
-import lu.kbra.extended_generators.items.GeneratorType;
-import lu.kbra.extended_generators.utils.ItemManager;
 
 public class PlayerManagerListener implements Listener {
 
@@ -63,7 +51,7 @@ public class PlayerManagerListener implements Listener {
 			}
 		}).thenApply(PCUtils.single2SingleMultiMap()).thenConsume(System.out::println).run();*/
 
-		event.getPlayer().getInventory().addItem(ItemManager.getItem(1, GeneratorType.ORES, null));
+		//event.getPlayer().getInventory().addItem(ItemManager.getItem(1, GeneratorType.ORES, null));
 	}
 
 	@EventHandler
