@@ -1,5 +1,7 @@
 package lu.kbra.extended_generators.listener;
 
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Container;
 import org.bukkit.block.Sign;
@@ -19,6 +21,7 @@ import lu.kbra.extended_generators.db.GeneratorManager;
 import lu.kbra.extended_generators.db.PlayerManager;
 import lu.kbra.extended_generators.db.data.ChunkData;
 import lu.kbra.extended_generators.db.data.GeneratorData;
+import lu.kbra.extended_generators.items.GeneratorType;
 import lu.kbra.extended_generators.utils.ItemManager;
 
 public class GeneratorsListener implements Listener {
@@ -31,9 +34,15 @@ public class GeneratorsListener implements Listener {
 
 			final Player player = event.getPlayer();
 			final ItemStack itemStack = event.getItemInHand();
+			
+			if(!itemStack.hasItemMeta()) {
+				return;
+			}
 			final ItemMeta itemMeta = itemStack.getItemMeta();
 
-			if (itemMeta.getDisplayName().equals(ItemManager.TITLE)) {
+			final String displayName = itemMeta.getDisplayName(), lore0 = itemMeta.getLore().get(0), lore1 = itemMeta.getLore().get(1), lore2 = itemMeta.getLore().get(2);
+			
+			if (displayName.equals(ItemManager.TITLE)) {
 				if (!(event.getBlockAgainst().getState() instanceof Container)) {
 					player.sendMessage("Not a container !");
 					event.setCancelled(true);
@@ -42,6 +51,10 @@ public class GeneratorsListener implements Listener {
 
 				player.sendMessage("Loading ! Please wait...");
 
+				final int tier = Integer.parseInt(ChatColor.stripColor(itemMeta.getLore().get(0)).replace("Tier: ", ""));
+				final GeneratorType type = GeneratorType.valueOf(ChatColor.stripColor(itemMeta.getLore().get(1)).replace("Type: ", ""));
+				final Material affinity = itemMeta.getLore().get(2).contains("NONE") ? null : Material.valueOf(ChatColor.stripColor(itemMeta.getLore().get(2)).replace("Affinity: ", ""));
+				
 				PlayerManager.getPlayer(player).catch_(Exception::printStackTrace).thenConsume(pd -> {
 					final ChunkData cm = ChunkManager.getOrCreateChunk(block.getLocation().getChunk()).catch_(Exception::printStackTrace).run();
 
@@ -50,15 +63,15 @@ public class GeneratorsListener implements Listener {
 						return;
 					}
 
-					final GeneratorData gd = GeneratorManager.createGenerator(ItemManager.getGeneratorData(pd, cm, block.getLocation(), itemStack)).catch_(Exception::printStackTrace).run();
+					final GeneratorData gd = GeneratorManager.createGenerator(ItemManager.getGeneratorData(pd, cm, block.getLocation(), tier, type, affinity)).catch_(Exception::printStackTrace).run();
 
 					ExtendedGenerators.INSTANCE.run(() -> {
 						player.closeInventory();
 
-						sign.getSide(Side.FRONT).setLine(0, itemMeta.getDisplayName());
-						sign.getSide(Side.FRONT).setLine(1, itemMeta.getLore().get(0));
-						sign.getSide(Side.FRONT).setLine(2, itemMeta.getLore().get(1));
-						sign.getSide(Side.FRONT).setLine(3, itemMeta.getLore().get(2));
+						sign.getSide(Side.FRONT).setLine(0, displayName);
+						sign.getSide(Side.FRONT).setLine(1, lore0);
+						sign.getSide(Side.FRONT).setLine(2, lore1);
+						sign.getSide(Side.FRONT).setLine(3, lore2);
 						sign.setWaxed(true);
 						sign.update();
 

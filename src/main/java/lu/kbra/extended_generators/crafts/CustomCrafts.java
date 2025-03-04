@@ -43,7 +43,6 @@ public class CustomCrafts {
 			ItemStack output = ItemManager.getItem(1, type, null);
 
 			NamespacedKey key = new NamespacedKey(ExtendedGenerators.INSTANCE, ("eg_gen_craft_" + type.name() + "_" + material.name()).toLowerCase());
-
 			ShapedRecipe recipe = new ShapedRecipe(key, output);
 
 			recipe.shape("SSS", "SDS", "SSS");

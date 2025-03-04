@@ -16,7 +16,7 @@ import lu.pcy113.pclib.PCUtils;
 import lu.pcy113.pclib.config.ConfigLoader;
 import lu.pcy113.pclib.db.DataBaseConnector;
 import lu.pcy113.pclib.pointer.prim.LongPointer;
-
+import lu.kbra.extended_generators.cmds.GenGiveCmd;
 import lu.kbra.extended_generators.crafts.CustomCrafts;
 import lu.kbra.extended_generators.db.EGDataBase;
 import lu.kbra.extended_generators.db.GeneratorManager;
@@ -71,6 +71,8 @@ public class ExtendedGenerators extends JavaPlugin {
 			e.printStackTrace();
 			Bukkit.getPluginManager().disablePlugin(this);
 		}
+		
+		registerCommand("gengive", new GenGiveCmd());
 
 		getServer().getPluginManager().registerEvents(new PlayerManagerListener(), this);
 		getServer().getPluginManager().registerEvents(new GeneratorsListener(), this);

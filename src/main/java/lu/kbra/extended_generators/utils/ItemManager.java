@@ -33,6 +33,10 @@ public class ItemManager {
 		final Material affinity = itemMeta.getLore().get(2).contains("NONE") ? null : Material.valueOf(ChatColor.stripColor(itemMeta.getLore().get(2)).replace("Affinity: ", ""));
 		return new GeneratorData(pd, cd, loc, type, affinity, tier);
 	}
+	
+	public static GeneratorData getGeneratorData(final PlayerData pd, final ChunkData cd, final Location loc, final int tier, final GeneratorType type, final Material affinity) {
+		return new GeneratorData(pd, cd, loc, type, affinity, tier);
+	}
 
 	public static ItemStack getItem(final GeneratorData gd) {
 		final ItemStack itemStack = new ItemStack(Material.OAK_SIGN);
