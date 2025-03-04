@@ -12,10 +12,6 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import lu.pcy113.pclib.PCUtils;
-import lu.pcy113.pclib.config.ConfigLoader;
-import lu.pcy113.pclib.db.DataBaseConnector;
-import lu.pcy113.pclib.pointer.prim.LongPointer;
 import lu.kbra.extended_generators.cmds.GenGiveCmd;
 import lu.kbra.extended_generators.crafts.CustomCrafts;
 import lu.kbra.extended_generators.db.EGDataBase;
@@ -23,11 +19,16 @@ import lu.kbra.extended_generators.db.GeneratorManager;
 import lu.kbra.extended_generators.db.PlayerManager;
 import lu.kbra.extended_generators.db.table.ChunkTable;
 import lu.kbra.extended_generators.db.table.GeneratorTable;
+import lu.kbra.extended_generators.db.table.HomeTable;
 import lu.kbra.extended_generators.db.table.PlayerTable;
 import lu.kbra.extended_generators.listener.CobbleGeneratorListener;
 import lu.kbra.extended_generators.listener.CustomCraftsListener;
 import lu.kbra.extended_generators.listener.GeneratorsListener;
 import lu.kbra.extended_generators.listener.PlayerManagerListener;
+import lu.pcy113.pclib.PCUtils;
+import lu.pcy113.pclib.config.ConfigLoader;
+import lu.pcy113.pclib.db.DataBaseConnector;
+import lu.pcy113.pclib.pointer.prim.LongPointer;
 
 public class ExtendedGenerators extends JavaPlugin {
 
@@ -113,6 +114,7 @@ public class ExtendedGenerators extends JavaPlugin {
 		final EGDataBase db = new EGDataBase(connector);
 		// db.createDB();
 		db.create(new PlayerTable(db));
+		db.create(new HomeTable(db));
 		db.create(new ChunkTable(db));
 		db.create(new GeneratorTable(db));
 	}

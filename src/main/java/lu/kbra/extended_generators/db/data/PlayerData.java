@@ -3,13 +3,19 @@ package lu.kbra.extended_generators.db.data;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
+import lu.kbra.extended_generators.db.table.HomeTable;
+import lu.pcy113.pclib.PCUtils;
+import lu.pcy113.pclib.async.NextTask;
 import lu.pcy113.pclib.db.DataBaseTable;
 import lu.pcy113.pclib.db.SQLBuilder;
 import lu.pcy113.pclib.db.annotations.GeneratedKey;
@@ -29,6 +35,8 @@ public class PlayerData implements SafeSQLEntry {
 	private UUID uuid;
 	private String name;
 
+	private List<HomeData> homes;
+
 	public PlayerData() {
 	}
 
@@ -41,6 +49,31 @@ public class PlayerData implements SafeSQLEntry {
 		this.name = name;
 	}
 
+	public NextTask<Void, HomeData> addHome(final String name, final Location loc) {
+		if (hasHome(name)) {
+			HomeData hd = getHome(name);
+			hd.setLocation(loc);
+			hd.setDimension(loc.getWorld().getName());
+			return HomeTable.INSTANCE.update(hd).thenApply(PCUtils.single2SingleMultiMap());
+		} else {
+			HomeData hd = new HomeData(id, name, loc);
+			return HomeTable.INSTANCE.insertAndReload(hd).thenApply(PCUtils.single2SingleMultiMap()).thenParallel(c -> homes.add(c));
+		}
+	}
+
+	public NextTask<Void, HomeData> removeHome(final String name, final Location loc) {
+		HomeData hd = getHome(name);
+		return HomeTable.INSTANCE.delete(hd).thenApply(PCUtils.single2SingleMultiMap()).thenParallel(c -> homes.remove(c));
+	}
+
+	public HomeData getHome(String name) {
+		return homes.stream().filter(c -> c.getName().equals(name)).findFirst().orElse(null);
+	}
+
+	public boolean hasHome(String name) {
+		return homes.stream().anyMatch(c -> c.getName().equals(name));
+	}
+
 	public OfflinePlayer getOfflinePlayer() {
 		return Bukkit.getOfflinePlayer(uuid);
 	}
@@ -51,6 +84,12 @@ public class PlayerData implements SafeSQLEntry {
 
 	public boolean isOnline() {
 		return Optional.ofNullable(getOnlinePlayer()).map(c -> (boolean) (c == null ? false : c.isOnline())).get();
+	}
+
+	public PlayerData loadHomes() {
+		homes = new ArrayList<HomeData>();
+		HomeTable.INSTANCE.query(HomeData.byPlayer(id)).thenApply(PCUtils.single2SingleMultiMap()).thenApply(homes::addAll).run();
+		return this;
 	}
 
 	@GeneratedKeyUpdate(type = Type.INDEX)

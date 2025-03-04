@@ -65,6 +65,7 @@ public class PlayerManager {
 					pd.setName(player.getName());
 					update(pd).run();
 				}
+				pd.loadHomes();
 			} else {
 				PlayerTable.INSTANCE.insert(new PlayerData(player)).catch_(Exception::printStackTrace).thenConsume(c -> getPlayer(player)).run();
 			}
