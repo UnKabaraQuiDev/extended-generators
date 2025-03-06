@@ -9,7 +9,7 @@ import lu.pcy113.pclib.db.annotations.Constraint.Type;
 import lu.pcy113.pclib.db.annotations.DB_Table;
 
 //@formatter:off
-@DB_Table(name = "generators", columns = {
+@DB_Table(name = "homes", columns = {
 		@Column(name = "id", type = "integer primary key autoincrement"),
 		@Column(name = "player_id", type = "int"),
 		@Column(name = "name", type = "varchar(64)"),

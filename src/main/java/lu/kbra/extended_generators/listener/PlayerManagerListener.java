@@ -3,6 +3,7 @@ package lu.kbra.extended_generators.listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 
@@ -54,6 +55,11 @@ public class PlayerManagerListener implements Listener {
 		//event.getPlayer().getInventory().addItem(ItemManager.getItem(1, GeneratorType.ORES, null));
 	}
 
+	@EventHandler
+	public void onPlayerQuit(PlayerQuitEvent event) {
+		PlayerManager.quit(event.getPlayer());
+	}
+	
 	@EventHandler
 	public void onChunkLoad(ChunkLoadEvent event) {
 		ChunkManager.load(event.getChunk());

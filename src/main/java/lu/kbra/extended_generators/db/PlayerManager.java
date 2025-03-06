@@ -57,6 +57,12 @@ public class PlayerManager {
 		playerCache.clear();
 	}
 
+	public static void quit(Player player) {
+		if(idCache.containsKey(player)) {
+			playerCache.remove(idCache.remove(player));
+		}
+	}
+	
 	public static void join(Player player) {
 		knowsPlayer(player).thenConsume(b -> {
 			if (b) {

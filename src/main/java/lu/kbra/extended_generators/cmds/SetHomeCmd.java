@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -11,30 +12,44 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
+import lu.kbra.extended_generators.ExtendedGenerators;
+import lu.kbra.extended_generators.db.PlayerManager;
+import lu.kbra.extended_generators.db.data.HomeData;
 import lu.kbra.extended_generators.items.GeneratorType;
-import lu.kbra.extended_generators.utils.ItemManager;
 
-public class GenGiveCmd implements CommandExecutor, TabCompleter {
+public class SetHomeCmd implements CommandExecutor, TabCompleter {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (!(sender instanceof Player))
 			return false;
 
-		final Player player = (Player) sender;
+		System.out.println(Arrays.toString(args));
 
-		try {
-			if (args.length == 2) {
-				player.getInventory().addItem(ItemManager.getItem(Integer.parseInt(args[0]), GeneratorType.valueOf(args[1].toUpperCase()), null));
-			} else if (args.length == 3) {
-				player.getInventory().addItem(ItemManager.getItem(Integer.parseInt(args[0]), GeneratorType.valueOf(args[1].toUpperCase()), Material.valueOf(args[2].toUpperCase())));
-			}
-		} catch (IllegalArgumentException e) {
-			player.sendMessage(ChatColor.RED + e.getMessage());
+		if (args.length < 1) {
 			return false;
 		}
 
-		return false;
+		final Player player = (Player) sender;
+
+		final String homeName = args[0];
+
+		final Location loc = player.getLocation();
+
+		PlayerManager.getPlayer(player).thenConsume(pd -> {
+			ExtendedGenerators.INSTANCE.getLogger().info("hallo");
+			ExtendedGenerators.INSTANCE.getLogger().info(pd.toString());
+			ExtendedGenerators.INSTANCE.getLogger().info(pd.getHomes().toString());
+			ExtendedGenerators.INSTANCE.getLogger().info(""+pd.hasHome(homeName));
+			
+			if (pd.hasHome(homeName)) {
+				player.sendMessage(ChatColor.RED + "Home already set: " + ChatColor.GOLD + homeName);
+			}
+
+			pd.addHome(homeName, loc).thenConsume(hd -> player.sendMessage(ChatColor.GREEN + "Home set: " + ChatColor.GOLD + homeName + ChatColor.GREEN + " at " + ChatColor.GOLD + " " + hd.getLocation())).run();
+		}).runAsync();
+
+		return true;
 	}
 
 	@Override

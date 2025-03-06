@@ -38,6 +38,10 @@ public class HomeData implements SafeSQLEntry {
 		this.name = name;
 		this.location = loc;
 		this.dimension = loc.getWorld().getName();
+		
+		this.posX = loc.getBlockX();
+		this.posY = loc.getBlockY();
+		this.posZ = loc.getBlockZ();
 	}
 
 	@GeneratedKeyUpdate(type = Type.INDEX)
@@ -183,6 +187,10 @@ public class HomeData implements SafeSQLEntry {
 
 	public void setLocation(Location location) {
 		this.location = location;
+		
+		this.posX = location.getBlockX();
+		this.posY = location.getBlockY();
+		this.posZ = location.getBlockZ();
 	}
 
 	@Override

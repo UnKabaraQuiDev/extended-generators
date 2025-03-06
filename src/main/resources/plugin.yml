@@ -6,3 +6,10 @@ author: UnKabaraQuiDev@github.com
 commands:
   gengive:
     permission: op
+  home:
+    name: home
+    usage: "/home <name>"
+  sethome:
+    name: sethome
+  delhome:
+    name: delhome
