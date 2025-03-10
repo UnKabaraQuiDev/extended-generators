@@ -1,5 +1,6 @@
 package lu.kbra.extended_generators.db;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -58,11 +59,11 @@ public class PlayerManager {
 	}
 
 	public static void quit(Player player) {
-		if(idCache.containsKey(player)) {
+		if (idCache.containsKey(player)) {
 			playerCache.remove(idCache.remove(player));
 		}
 	}
-	
+
 	public static void join(Player player) {
 		knowsPlayer(player).thenConsume(b -> {
 			if (b) {
@@ -73,7 +74,7 @@ public class PlayerManager {
 				}
 				pd.loadHomes();
 			} else {
-				PlayerTable.INSTANCE.insert(new PlayerData(player)).catch_(Exception::printStackTrace).thenConsume(c -> getPlayer(player)).run();
+				PlayerTable.INSTANCE.insert(new PlayerData(player)).catch_(Exception::printStackTrace).thenCompose(c -> getPlayer(player)).thenParallel(c -> c.setHomes(new ArrayList<>())).run();
 			}
 		}).runAsync();
 	}

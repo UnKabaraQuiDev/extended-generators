@@ -5,11 +5,12 @@
 
 	<groupId>lu.kbra</groupId>
 	<artifactId>extended-generators</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.1</version>
 	<name>Extended Generators</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<finalName>${project.artifactId}-${project.version}-all</finalName>
 	</properties>
 
 	<repositories>
@@ -91,8 +92,11 @@
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
+					<finalName>${finalName}</finalName>
+					<appendAssemblyId>false</appendAssemblyId>
 				</configuration>
 			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
@@ -110,7 +114,7 @@
 								<resource>
 									<directory>${project.build.directory}</directory>
 									<includes>
-										<include>extended-generators-0.0.1-SNAPSHOT-jar-with-dependencies.jar</include>
+										<include>${finalName}.jar</include>
 									</includes>
 								</resource>
 							</resources>

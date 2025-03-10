@@ -37,17 +37,19 @@ public class SetHomeCmd implements CommandExecutor, TabCompleter {
 		final Location loc = player.getLocation();
 
 		PlayerManager.getPlayer(player).thenConsume(pd -> {
-			ExtendedGenerators.INSTANCE.getLogger().info("hallo");
-			ExtendedGenerators.INSTANCE.getLogger().info(pd.toString());
-			ExtendedGenerators.INSTANCE.getLogger().info(pd.getHomes().toString());
-			ExtendedGenerators.INSTANCE.getLogger().info(""+pd.hasHome(homeName));
-			
-			if (pd.hasHome(homeName)) {
-				player.sendMessage(ChatColor.RED + "Home already set: " + ChatColor.GOLD + homeName);
+			if (pd.getHomes() == null) {
+				pd.loadHomes();
 			}
 
-			pd.addHome(homeName, loc).thenConsume(hd -> player.sendMessage(ChatColor.GREEN + "Home set: " + ChatColor.GOLD + homeName + ChatColor.GREEN + " at " + ChatColor.GOLD + " " + hd.getLocation())).run();
-		}).runAsync();
+			if (pd.hasHome(homeName)) {
+				player.sendMessage(ChatColor.RED + "Home already set: " + ChatColor.GOLD + homeName);
+				return;
+			}
+
+			pd.addHome(homeName, loc).thenConsume(hd -> player.sendMessage(
+					ChatColor.GREEN + "Home set: " + ChatColor.GOLD + homeName + ChatColor.GREEN + " at " + ChatColor.GOLD + " " + hd.getLocation().getBlockX() + ", " + hd.getLocation().getBlockY() + ", " + hd.getLocation().getBlockZ()))
+					.run();
+		}).catch_(Exception::printStackTrace).runAsync();
 
 		return true;
 	}

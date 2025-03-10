@@ -32,12 +32,13 @@ public class HomeCmd implements CommandExecutor, TabCompleter {
 		final String homeName = args[0];
 
 		PlayerManager.getPlayer(player).thenConsume(pd -> {
-			ExtendedGenerators.INSTANCE.getLogger().info("hallo");
-			ExtendedGenerators.INSTANCE.getLogger().info(pd.toString());
-			ExtendedGenerators.INSTANCE.getLogger().info(pd.getHomes().toString());
-			ExtendedGenerators.INSTANCE.getLogger().info(""+pd.hasHome(homeName));
+			if (pd.getHomes() == null) {
+				pd.loadHomes();
+			}
+			
 			if (!pd.hasHome(homeName)) {
 				player.sendMessage(ChatColor.RED + "No home named: " + ChatColor.GOLD + homeName);
+				return;
 			}
 
 			ExtendedGenerators.INSTANCE.run(() -> {
@@ -46,7 +47,7 @@ public class HomeCmd implements CommandExecutor, TabCompleter {
 				player.sendMessage(ChatColor.GREEN + "Transporting to: " + ChatColor.GOLD + homeName);
 				player.teleport(home.getLocation());
 			});
-		}).runAsync();
+		}).catch_(Exception::printStackTrace).runAsync();
 
 		return true;
 	}

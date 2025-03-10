@@ -88,7 +88,7 @@ public class PlayerData implements SafeSQLEntry {
 
 	public PlayerData loadHomes() {
 		homes = new ArrayList<HomeData>();
-		HomeTable.INSTANCE.query(HomeData.byPlayer(id)).thenApply(PCUtils.single2SingleMultiMap()).thenParallel(c -> System.out.println("loaded: "+c.size()+" homes")).thenApply(homes::addAll).run();
+		HomeTable.INSTANCE.query(HomeData.byPlayer(id)).thenApply(PCUtils.single2SingleMultiMap()).thenApply(homes::addAll).run();
 		return this;
 	}
 
@@ -169,9 +169,13 @@ public class PlayerData implements SafeSQLEntry {
 		return homes;
 	}
 
+	public void setHomes(List<HomeData> homes) {
+		this.homes = homes;
+	}
+
 	@Override
 	public String toString() {
-		return "PlayerData [id=" + id + ", uuid=" + uuid + ", name=" + name + "]";
+		return "PlayerData [id=" + id + ", uuid=" + uuid + ", name=" + name + ", homes=" + homes + "]";
 	}
 
 	@Override
