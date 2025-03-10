@@ -26,6 +26,7 @@ public class GeneratorManager {
 
 	public static void init() {
 		runnable = new BukkitRunnable() {
+			int latest = -1;
 			long tick = 0;
 
 			@Override
@@ -46,7 +47,10 @@ public class GeneratorManager {
 
 				if (tick >= 60) {
 					tick = 0;
-					ExtendedGenerators.INSTANCE.getLogger().info("Currently active generators: " + activeGenerators.size());
+					if (latest != activeGenerators.size()) {
+						ExtendedGenerators.INSTANCE.getLogger().info("Currently active generators: " + activeGenerators.size());
+						latest = activeGenerators.size();
+					}
 				}
 
 				tick++;

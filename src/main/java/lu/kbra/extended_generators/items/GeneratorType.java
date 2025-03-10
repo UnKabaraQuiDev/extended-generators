@@ -17,7 +17,7 @@ public enum GeneratorType {
 	STONES("Stones",
 			PCUtils.hashMap(Material.COBBLESTONE, 0.4, Material.STONE, 0.05, Material.DIORITE, 0.1, Material.ANDESITE, 0.1, Material.GRANITE, 0.05, Material.MOSSY_COBBLESTONE, 0.05, Material.COBBLED_DEEPSLATE, 0.2, Material.BASALT, 0.02,
 					Material.NETHERRACK, 0.05)),
-
+	
 	ORGANICS("Organics", PCUtils.hashMap(Material.DIRT, 0.35, Material.GRASS_BLOCK, 0.25, Material.SAND, 0.15, Material.CLAY, 0.05, Material.GRAVEL, 0.05, Material.STONE, 0.05, Material.PODZOL, 0.05, Material.MYCELIUM, 0.05)),
 
 	PLANTS("Plants",
@@ -29,7 +29,7 @@ public enum GeneratorType {
 					0.001, Material.NETHER_QUARTZ_ORE, 0.9, Material.NETHER_GOLD_ORE, 0.6, Material.ANCIENT_DEBRIS, 0.001)),
 
 	ORE_ITEMS("Ore items", PCUtils.hashMap(Material.COAL, 0.625, Material.RAW_IRON, 0.42, Material.RAW_COPPER, 0.20, Material.RAW_GOLD, 0.125, Material.REDSTONE, 0.04, Material.LAPIS_LAZULI, 0.02, Material.DIAMOND, 0.008, Material.EMERALD,
-			0.001, Material.QUARTZ, 0.9, Material.GOLD_NUGGET, 0.6, Material.NETHERITE_SCRAP, 0.001));
+			0.001, Material.QUARTZ, 0.625, Material.GOLD_NUGGET, 0.2, Material.NETHERITE_SCRAP, 0.001));
 
 	private String name;
 	private HashMap<Material, Double> items;

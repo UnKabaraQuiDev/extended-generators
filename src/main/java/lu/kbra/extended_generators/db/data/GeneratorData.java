@@ -95,7 +95,7 @@ public class GeneratorData implements SafeSQLEntry {
 
 	/** items/min */
 	public int calculateSpeed() {
-		return (int) (Math.pow(tier, 2) * 6);
+		return (int) (Math.pow(tier, 2) * 2);
 	}
 
 	public void generate() {
