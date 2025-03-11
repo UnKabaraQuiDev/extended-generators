@@ -61,7 +61,7 @@ public class PlayerData implements SafeSQLEntry {
 		}
 	}
 
-	public NextTask<Void, HomeData> removeHome(final String name, final Location loc) {
+	public NextTask<Void, HomeData> removeHome(final String name) {
 		HomeData hd = getHome(name);
 		return HomeTable.INSTANCE.delete(hd).thenApply(PCUtils.single2SingleMultiMap()).thenParallel(c -> homes.remove(c));
 	}

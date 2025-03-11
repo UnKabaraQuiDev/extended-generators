@@ -12,9 +12,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
-import lu.kbra.extended_generators.ExtendedGenerators;
 import lu.kbra.extended_generators.db.PlayerManager;
-import lu.kbra.extended_generators.db.data.HomeData;
 import lu.kbra.extended_generators.items.GeneratorType;
 
 public class SetHomeCmd implements CommandExecutor, TabCompleter {
@@ -23,8 +21,6 @@ public class SetHomeCmd implements CommandExecutor, TabCompleter {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (!(sender instanceof Player))
 			return false;
-
-		System.out.println(Arrays.toString(args));
 
 		if (args.length < 1) {
 			return false;

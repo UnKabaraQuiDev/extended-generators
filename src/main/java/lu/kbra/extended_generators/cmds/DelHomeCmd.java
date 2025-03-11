@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -14,8 +15,9 @@ import lu.kbra.extended_generators.ExtendedGenerators;
 import lu.kbra.extended_generators.db.PlayerManager;
 import lu.kbra.extended_generators.db.data.HomeData;
 import lu.kbra.extended_generators.db.data.PlayerData;
+import lu.kbra.extended_generators.items.GeneratorType;
 
-public class HomeCmd implements CommandExecutor, TabCompleter {
+public class DelHomeCmd implements CommandExecutor, TabCompleter {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -34,17 +36,18 @@ public class HomeCmd implements CommandExecutor, TabCompleter {
 			if (pd.getHomes() == null) {
 				pd.loadHomes();
 			}
-
+			
 			if (!pd.hasHome(homeName)) {
 				player.sendMessage(ChatColor.RED + "No home named: " + ChatColor.GOLD + homeName);
 				return;
 			}
+			
+
+			final HomeData home = pd.getHome(homeName);
+			pd.removeHome(homeName).run();
 
 			ExtendedGenerators.INSTANCE.run(() -> {
-				final HomeData home = pd.getHome(homeName);
-				home.loadAll();
-				player.sendMessage(ChatColor.GREEN + "Transporting to: " + ChatColor.GOLD + homeName);
-				player.teleport(home.getLocation());
+				player.sendMessage(ChatColor.GREEN + "Home deleted: " + ChatColor.GOLD + homeName);
 			});
 		}).catch_(Exception::printStackTrace).runAsync();
 

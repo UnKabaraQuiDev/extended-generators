@@ -8,13 +8,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import lu.pcy113.pclib.PCUtils;
-import lu.pcy113.pclib.async.NextTask;
-
 import lu.kbra.extended_generators.ExtendedGenerators;
 import lu.kbra.extended_generators.db.data.ChunkData;
 import lu.kbra.extended_generators.db.data.GeneratorData;
 import lu.kbra.extended_generators.db.table.GeneratorTable;
+import lu.pcy113.pclib.PCUtils;
+import lu.pcy113.pclib.async.NextTask;
 
 public class GeneratorManager {
 

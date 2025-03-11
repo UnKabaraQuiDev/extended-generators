@@ -13,6 +13,9 @@ import org.bukkit.block.Sign;
 import org.bukkit.block.data.type.WallSign;
 import org.bukkit.inventory.ItemStack;
 
+import lu.kbra.extended_generators.ExtendedGenerators;
+import lu.kbra.extended_generators.db.ChunkManager;
+import lu.kbra.extended_generators.items.GeneratorType;
 import lu.pcy113.pclib.db.DataBaseTable;
 import lu.pcy113.pclib.db.SQLBuilder;
 import lu.pcy113.pclib.db.annotations.GeneratedKey;
@@ -25,11 +28,6 @@ import lu.pcy113.pclib.db.impl.SQLEntry.SafeSQLEntry;
 import lu.pcy113.pclib.db.impl.SQLQuery;
 import lu.pcy113.pclib.db.impl.SQLQuery.SafeSQLQuery;
 
-import lu.kbra.extended_generators.ExtendedGenerators;
-import lu.kbra.extended_generators.db.ChunkManager;
-import lu.kbra.extended_generators.db.PlayerManager;
-import lu.kbra.extended_generators.items.GeneratorType;
-
 @GeneratedKey("id")
 public class GeneratorData implements SafeSQLEntry {
 
@@ -41,7 +39,6 @@ public class GeneratorData implements SafeSQLEntry {
 	private Material affinity;
 
 	private ChunkData chunkData;
-	private PlayerData playerData;
 	private Location location;
 
 	private Container container;
@@ -60,7 +57,6 @@ public class GeneratorData implements SafeSQLEntry {
 		this.tier = tier;
 
 		this.chunkData = chunkData;
-		this.playerData = playerData;
 		this.location = location;
 	}
 
@@ -130,7 +126,6 @@ public class GeneratorData implements SafeSQLEntry {
 	public GeneratorData loadAll() {
 		loadChunk();
 		loadBukkit();
-		loadPlayer();
 		return this;
 	}
 
@@ -141,11 +136,6 @@ public class GeneratorData implements SafeSQLEntry {
 
 	public GeneratorData loadBukkit() {
 		this.location = new Location(chunkData.getChunk().getWorld(), posX, posY, posZ);
-		return this;
-	}
-
-	public GeneratorData loadPlayer() {
-		this.playerData = PlayerManager.getPlayer(playerId).run();
 		return this;
 	}
 
@@ -284,14 +274,6 @@ public class GeneratorData implements SafeSQLEntry {
 		this.chunkData = chunkData;
 	}
 
-	public PlayerData getPlayerData() {
-		return playerData;
-	}
-
-	public void setPlayerData(PlayerData playerData) {
-		this.playerData = playerData;
-	}
-
 	public Location getLocation() {
 		return location;
 	}
@@ -303,7 +285,7 @@ public class GeneratorData implements SafeSQLEntry {
 	@Override
 	public String toString() {
 		return "GeneratorData [id=" + id + ", playerId=" + playerId + ", chunkId=" + chunkId + ", posX=" + posX + ", posY=" + posY + ", posZ=" + posZ + ", tier=" + tier + ", type=" + type + ", affinity=" + affinity + ", chunkData="
-				+ (chunkData == null ? "null" : "not null") + ", playerData=" + playerData + ", location=" + location + "]";
+				+ (chunkData == null ? "null" : "not null") + ", location=" + location + "]";
 	}
 
 	@Override
