@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.World;
 
 import lu.kbra.extended_generators.db.table.GeneratorTable;
 import lu.pcy113.pclib.PCUtils;
@@ -215,6 +216,27 @@ public class ChunkData implements SafeSQLEntry {
 				stmt.setString(1, chunk.getWorld().getName());
 				stmt.setInt(2, chunk.getX());
 				stmt.setInt(3, chunk.getZ());
+			}
+
+			@Override
+			public ChunkData clone() {
+				return new ChunkData();
+			}
+		};
+	}
+
+	public static SQLQuery<ChunkData> byChunk(World world, int chunkX, int chunkZ) {
+		return new SafeSQLQuery<ChunkData>() {
+			@Override
+			public String getPreparedQuerySQL(DataBaseTable<ChunkData> table) {
+				return SQLBuilder.safeSelect(table, new String[] { "pos_dimension", "pos_x", "pos_z" });
+			}
+
+			@Override
+			public void updateQuerySQL(PreparedStatement stmt) throws SQLException {
+				stmt.setString(1, world.getName());
+				stmt.setInt(2, chunkX);
+				stmt.setInt(3, chunkZ);
 			}
 
 			@Override

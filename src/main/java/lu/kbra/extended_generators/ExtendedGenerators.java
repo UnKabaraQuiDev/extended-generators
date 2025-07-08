@@ -12,11 +12,13 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import lu.kbra.extended_generators.cmds.GenClearCmd;
 import lu.kbra.extended_generators.cmds.DelHomeCmd;
 import lu.kbra.extended_generators.cmds.GenGiveCmd;
 import lu.kbra.extended_generators.cmds.HomeCmd;
 import lu.kbra.extended_generators.cmds.HomesCmd;
 import lu.kbra.extended_generators.cmds.SetHomeCmd;
+import lu.kbra.extended_generators.cmds.s.SDelHomeCmd;
 import lu.kbra.extended_generators.crafts.CustomCrafts;
 import lu.kbra.extended_generators.db.EGDataBase;
 import lu.kbra.extended_generators.db.GeneratorManager;
@@ -54,7 +56,7 @@ public class ExtendedGenerators extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		Bukkit.getServer().getOnlinePlayers().forEach(PlayerManager::quit);
-		
+
 		PlayerManager.clear();
 
 		try {
@@ -66,7 +68,7 @@ public class ExtendedGenerators extends JavaPlugin {
 		// CobbleGeneratorListener.INSTANCE.printProbabilitiesStats(getLogger()::info);
 
 		GeneratorManager.runnable.cancel();
-		
+
 		getLogger().info(this.getClass().getName() + " disabled !");
 	}
 
@@ -79,12 +81,16 @@ public class ExtendedGenerators extends JavaPlugin {
 			e.printStackTrace();
 			Bukkit.getPluginManager().disablePlugin(this);
 		}
-		
-		registerCommand("gengive", new GenGiveCmd());
+
 		registerCommand("home", new HomeCmd());
 		registerCommand("sethome", new SetHomeCmd());
 		registerCommand("delhome", new DelHomeCmd());
 		registerCommand("homes", new HomesCmd());
+
+		registerCommand("sdelhome", new SDelHomeCmd());
+		
+		registerCommand("gengive", new GenGiveCmd());
+		registerCommand("genclear", new GenClearCmd());
 
 		getServer().getPluginManager().registerEvents(new PlayerManagerListener(), this);
 		getServer().getPluginManager().registerEvents(new PlayerMiscListener(), this);
@@ -107,7 +113,7 @@ public class ExtendedGenerators extends JavaPlugin {
 		}
 
 		GeneratorManager.init();
-		
+
 		Bukkit.getServer().getOnlinePlayers().forEach(PlayerManager::join);
 
 		getLogger().info(this.getClass().getName() + " enabled !");

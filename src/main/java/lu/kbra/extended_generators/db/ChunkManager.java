@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.Chunk;
+import org.bukkit.World;
 
 import lu.kbra.extended_generators.ExtendedGenerators;
 import lu.kbra.extended_generators.db.data.ChunkData;
@@ -42,6 +43,10 @@ public class ChunkManager {
 
 			return idCache.get(chunk);
 		});
+	}
+
+	public static NextTask<Void, ChunkData> getChunk(final World world, final int chunkX, final int chunkZ) {
+		return getChunk(world.getChunkAt(chunkX, chunkZ));
 	}
 
 	public static NextTask<Void, Integer> getOrCreateChunkId(final Chunk chunk) {
@@ -93,7 +98,7 @@ public class ChunkManager {
 		if (idCache.containsKey(chunk)) {
 			chunkCache.get(idCache.get(chunk)).getGenerators().forEach(GeneratorManager::unload);
 			ExtendedGenerators.INSTANCE.getLogger().info("Unloaded chunk (" + chunk.getX() + ", " + chunk.getZ() + ") and " + chunkCache.get(idCache.get(chunk)).getGenerators().size() + " generators.");
-			
+
 			chunkCache.remove(idCache.get(chunk));
 			idCache.remove(chunk);
 		}

@@ -17,12 +17,20 @@ public class PlayerManager {
 	public static Map<Player, Integer> idCache = new HashMap<>();
 	public static Map<Integer, PlayerData> playerCache = new HashMap<>();
 
-	private static NextTask<Void, Boolean> knowsPlayer(UUID uuid) {
+	public static NextTask<Void, Boolean> knowsPlayer(UUID uuid) {
 		return PlayerTable.INSTANCE.query(PlayerData.byUUID(uuid)).thenApply(PCUtils.single2SingleMultiMap()).thenApply(c -> !c.isEmpty());
 	}
 
-	private static NextTask<Void, PlayerData> getPlayer(UUID uuid) {
+	public static NextTask<Void, PlayerData> getPlayer(UUID uuid) {
 		return PlayerTable.INSTANCE.query(PlayerData.byUUID(uuid)).thenApply(PCUtils.list2FirstMultiMap()).thenParallel(pd -> playerCache.put(pd.getId(), pd));
+	}
+
+	public static NextTask<Void, Boolean> knowsPlayer(String name) {
+		return PlayerTable.INSTANCE.query(PlayerData.byName(name)).thenApply(PCUtils.single2SingleMultiMap()).thenApply(c -> !c.isEmpty());
+	}
+
+	public static NextTask<Void, PlayerData> getPlayer(String name) {
+		return PlayerTable.INSTANCE.query(PlayerData.byName(name)).thenApply(PCUtils.list2FirstMultiMap()).thenParallel(pd -> playerCache.put(pd.getId(), pd));
 	}
 
 	public static NextTask<Void, Boolean> knowsPlayer(Player player) {

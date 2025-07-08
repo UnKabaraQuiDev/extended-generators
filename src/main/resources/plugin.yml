@@ -14,3 +14,16 @@ commands:
     name: delhome
   homes:
     name: homes
+
+  sdelhome:
+	name: sdelhome
+  ssethome:
+    name: ssethome
+  shome:
+    name: shome
+  shomes:
+    name: shomes
+	
+  genclear:
+	name: genclear
+  
