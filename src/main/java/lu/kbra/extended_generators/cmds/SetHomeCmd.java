@@ -42,8 +42,9 @@ public class SetHomeCmd implements CommandExecutor, TabCompleter {
 				return;
 			}
 
-			pd.addHome(homeName, loc).thenConsume(hd -> player.sendMessage(
-					ChatColor.GREEN + "Home set: " + ChatColor.GOLD + homeName + ChatColor.GREEN + " at " + ChatColor.GOLD + " " + hd.getLocation().getBlockX() + ", " + hd.getLocation().getBlockY() + ", " + hd.getLocation().getBlockZ()))
+			pd.addHome(homeName, loc)
+					.thenConsume(hd -> player.sendMessage(
+							ChatColor.GREEN + "Home set: " + ChatColor.GOLD + homeName + ChatColor.GREEN + " at " + ChatColor.GOLD + hd.getLocation().getBlockX() + ", " + hd.getLocation().getBlockY() + ", " + hd.getLocation().getBlockZ()))
 					.run();
 		}).catch_(Exception::printStackTrace).runAsync();
 
