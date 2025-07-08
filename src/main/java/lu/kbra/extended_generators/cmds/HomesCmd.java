@@ -26,7 +26,7 @@ public class HomesCmd implements CommandExecutor {
 			}
 
 			ExtendedGenerators.INSTANCE.run(() -> {
-				player.sendMessage(ChatColor.GREEN + "Your homes: \n" + pd.getHomes().stream().map(c -> ChatColor.GRAY + " - " + ChatColor.GOLD + c).collect(Collectors.joining("\n")));
+				player.sendMessage(ChatColor.GREEN + "Your homes: \n" + pd.getHomes().stream().map(c -> ChatColor.GRAY + " - " + ChatColor.GOLD + c.getName()).collect(Collectors.joining("\n")));
 			});
 		}).catch_(Exception::printStackTrace).runAsync();
 
