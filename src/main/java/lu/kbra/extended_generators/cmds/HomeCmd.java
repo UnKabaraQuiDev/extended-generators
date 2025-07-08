@@ -44,7 +44,7 @@ public class HomeCmd implements CommandExecutor, TabCompleter {
 				final HomeData home = pd.getHome(homeName);
 				home.loadAll();
 				player.sendMessage(ChatColor.GREEN + "Transporting to: " + ChatColor.GOLD + homeName);
-				player.teleport(home.getLocation().clone().add(0.5, 0.5, 0.5));
+				player.teleport(home.getLocation().clone().add(0.5, 0, 0.5));
 			});
 		}).catch_(Exception::printStackTrace).runAsync();
 

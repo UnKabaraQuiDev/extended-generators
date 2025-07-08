@@ -29,6 +29,7 @@ import lu.kbra.extended_generators.listener.CobbleGeneratorListener;
 import lu.kbra.extended_generators.listener.CustomCraftsListener;
 import lu.kbra.extended_generators.listener.GeneratorsListener;
 import lu.kbra.extended_generators.listener.PlayerManagerListener;
+import lu.kbra.extended_generators.listener.PlayerMiscListener;
 import lu.pcy113.pclib.PCUtils;
 import lu.pcy113.pclib.config.ConfigLoader;
 import lu.pcy113.pclib.db.DataBaseConnector;
@@ -86,6 +87,7 @@ public class ExtendedGenerators extends JavaPlugin {
 		registerCommand("homes", new HomesCmd());
 
 		getServer().getPluginManager().registerEvents(new PlayerManagerListener(), this);
+		getServer().getPluginManager().registerEvents(new PlayerMiscListener(), this);
 		getServer().getPluginManager().registerEvents(new GeneratorsListener(), this);
 		getServer().getPluginManager().registerEvents(new CustomCraftsListener(), this);
 
