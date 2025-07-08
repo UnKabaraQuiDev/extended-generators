@@ -23,7 +23,7 @@ commands:
     name: shome
   shomes:
     name: shomes
-	
+
   genclear:
-	name: genclear
+    name: genclear
   
