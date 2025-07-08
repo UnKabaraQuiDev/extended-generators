@@ -14,7 +14,6 @@ commands:
     name: delhome
   homes:
     name: homes
-
   sdelhome:
 	name: sdelhome
   ssethome:
@@ -23,7 +22,6 @@ commands:
     name: shome
   shomes:
     name: shomes
-
   genclear:
     name: genclear
   
