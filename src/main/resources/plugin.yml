@@ -15,7 +15,7 @@ commands:
   homes:
     name: homes
   sdelhome:
-	name: sdelhome
+    name: sdelhome
   ssethome:
     name: ssethome
   shome:
